@@ -1,0 +1,8 @@
+export enum AuditEntity {
+    PRODUCT = "PRODUCT",
+    PRODUCT_TYPE = "PRODUCT_TYPE",
+    CONTAINER = "CONTAINER",
+    CATEGORY = "CATEGORY",
+    WAREHOUSE = "WAREHOUSE",
+    USER = "USER"
+}

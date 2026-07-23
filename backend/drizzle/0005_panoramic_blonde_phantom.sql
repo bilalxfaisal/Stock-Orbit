@@ -1,0 +1,1 @@
+ALTER TABLE "Container" ALTER COLUMN "code" SET DATA TYPE varchar(5);
