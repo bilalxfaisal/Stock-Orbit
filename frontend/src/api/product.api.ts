@@ -1,7 +1,7 @@
-import type { ProductResponse } from "types/products.types";
+import type { ProductResponse } from "@/types/products.types";
 import api from "./axios";
-import type { StockInProductDto } from "types/stock-in-product.dto";
-import type { StockOutProductDto } from "types/stock-out-product.dto";
+import type { StockInProductDto } from "@/types/stock-in-product.dto";
+import type { StockOutProductDto } from "@/types/stock-out-product.dto";
 
 export async function getProducts(): Promise<ProductResponse[]> {
     const response = await api.get("/products")

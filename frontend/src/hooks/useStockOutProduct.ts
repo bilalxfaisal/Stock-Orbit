@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { stockInProduct } from "@/api/product.api";
+import { stockOutProduct } from "@/api/product.api";
 
-export function useStockInProduct() {
+export function useStockOutProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: stockInProduct,
+    mutationFn: stockOutProduct,
 
     onSuccess: () => {
       toast.success("Product stocked out successfully.");

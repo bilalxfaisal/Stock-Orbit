@@ -1,6 +1,5 @@
 export interface StockOutProductDto{
-    brand: string, 
-    model: string, 
+    productId: number,
     quantity: number, 
     reason: string,
 }
