@@ -6,12 +6,15 @@ import "./index.css";
 import { router } from "@/routes/router";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/providers/AuthProvider";
+import QueryProvider from "./providers/QueryProvider";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-      <Toaster richColors position="top-right" />
-    </AuthProvider>
+    <QueryProvider>
+      <AuthProvider>
+        <RouterProvider router={router} />
+        <Toaster richColors position="top-right" />
+      </AuthProvider>
+    </QueryProvider>
   </StrictMode>
 );

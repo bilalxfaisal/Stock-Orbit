@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { db } from 'src/db/db';
-import { eq, and, SQL, ilike, asc, desc, gte, lte } from "drizzle-orm"
-import { Product, ProductType } from "src/db/schema"
+import { eq, and, SQL, ilike, asc, desc, gte, lte, getTableColumns } from "drizzle-orm"
+import { Category, Container, Product, ProductType } from "src/db/schema"
 import { SearchProductDto, StockInProductDto, StockOutProductDto, UpdatePriceDto } from './dto';
 import { AuditService } from 'src/audit/audit.service';
 import { ProductHelper } from './product.helper';
@@ -112,11 +112,28 @@ export class ProductService {
         // ---------- Query ----------
 
         const products = await db
-            .select()
+            .select({
+                id: Product.id,
+                model: Product.model,
+                brand: Product.brand,
+                quantity: Product.quantity,
+                price: Product.price,
+                category: Category.name,
+                productType: ProductType.name,
+                container: Container.code
+            })
             .from(Product)
             .innerJoin(
                 ProductType,
                 eq(Product.productTypeId, ProductType.id),
+            )
+            .innerJoin(
+                Category,
+                eq(Category.id, ProductType.categoryId)
+            )
+            .innerJoin(
+                Container,
+                eq(Container.id, Product.containerId)
             )
             .where(
                 conditions.length ? and(...conditions) : undefined,

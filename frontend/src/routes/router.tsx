@@ -1,9 +1,9 @@
-
-
-import LoginPage from "@/features/auth/LoginPage"
-import DashboardPage from "@/features/dashboard/DashboardPage"
 import {createBrowserRouter} from "react-router-dom"
 import ProtectedRoute from "@/components/ProtectedRoute"
+import DashboardPage from "@/pages/DashboardPage"
+import LoginPage from "@/pages/LoginPage"
+import ProductsPage from "@/pages/ProductsPage"
+
 
 export const router = createBrowserRouter([
     {
@@ -12,6 +12,10 @@ export const router = createBrowserRouter([
             {
                 path: "/",
                 element: <DashboardPage />
+            },
+            {
+                path: "/products",
+                element: <ProductsPage />
             }
         ]
     },

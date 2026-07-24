@@ -1,5 +1,6 @@
 import {
     IsInt,
+    IsNotEmpty,
     IsPositive,
     IsString,
     Length,
@@ -7,26 +8,31 @@ import {
 } from "class-validator";
 
 export class StockInProductDto {
-
+    
+    @IsNotEmpty()
     @IsString()
-    @Length(2, 100)
     brand!: string;
 
+    @IsNotEmpty()
     @IsString()
-    @Length(2, 100)
     model!: string;
 
+    @IsNotEmpty()
     @IsInt()
     @IsPositive()
     price!: number;
 
+    @IsNotEmpty()
     @IsInt()
     @Min(0)
+    @IsPositive()
     quantity!: number;
 
     @IsInt()
+    @IsNotEmpty()
     productTypeId!: number;
 
+    @IsNotEmpty()
     @IsInt()
     containerId!: number;
 }

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/providers/AuthProvider";
+import { Form } from "@base-ui/react";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -34,9 +35,9 @@ export default function LoginPage() {
         <>
             <h1>Login</h1>
 
-            <form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit}>
                 <div>
-                    <label>Login Form</label>
+                    <Label>Login Form</Label>
                 </div>
                 <div>
                     <Label htmlFor="email">Email</Label>
@@ -55,7 +56,7 @@ export default function LoginPage() {
                 <br />
 
                 <Button type="submit" disabled={loading}>{loading ? "Logging in..." : "Login"}</Button>
-            </form>
+            </Form>
         </>
     );
 }
