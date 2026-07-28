@@ -1,9 +1,9 @@
 import api from "./axios";
 
-import type { Audit, AuditStats } from "@/types/audit.types";
+import type { Audit, AuditStats, SearchAuditDto } from "@/types/audit.types";
 
-export async function getAuditHistory(): Promise<Audit[]> {
-    const response = await api.get("/audit");
+export async function getAuditHistory(query?: SearchAuditDto): Promise<Audit[]> {
+    const response = await api.get("/audit", {params: query});
     return response.data;
 }
 

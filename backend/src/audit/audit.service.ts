@@ -3,7 +3,9 @@ import { db } from 'src/db/db';
 import { Warehouse, Container, Category, Product, Audit, ProductType } from "src/db/schema"
 import { AuditEntity, AuditAction, StockOutReason } from 'src/db/enums';
 import { AuditLogDto } from './dto/audit-log.dto';
-import { and, eq, desc, gte, count, sum } from 'drizzle-orm';
+import { and, eq, desc, gte, count, sum, SQL } from 'drizzle-orm';
+import { SearchAuditDto } from './dto/search-audit.dto';
+import { addListener } from 'process';
 
 @Injectable()
 export class AuditService {
@@ -24,25 +26,30 @@ export class AuditService {
         return await db.select().from(Audit).orderBy(desc(Audit.createdAt));
     }
 
-    async getHistory(entity: AuditEntity, entityId?: number) {
+    async getHistory(query: SearchAuditDto) {
 
-        if (entityId !== undefined) {
-            return await db
-                .select()
-                .from(Audit)
-                .where(
-                    and(
-                        eq(Audit.entity, entity),
-                        eq(Audit.entityId, entityId),
-                    ),
-                )
-                .orderBy(desc(Audit.createdAt));
+        const conditions: SQL[] = [];
+
+        console.log(query);
+
+        if (query.action) {
+            conditions.push(
+                eq(Audit.action, query.action)
+            )
+        }
+
+        if (query.entity) {
+            conditions.push(
+                eq(Audit.entity, query.entity)
+            )
         }
 
         return await db
             .select()
             .from(Audit)
-            .where(eq(Audit.entity, entity))
+            .where(
+                conditions.length ? and(...conditions) : undefined,
+            )
             .orderBy(desc(Audit.createdAt));
     }
 

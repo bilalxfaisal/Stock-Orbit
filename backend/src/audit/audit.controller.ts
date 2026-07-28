@@ -1,4 +1,4 @@
-import { Controller, Get, NotFoundException, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 
 import { AuditService } from './audit.service';
 import { AuditEntity, UserRole } from 'src/db/enums';
@@ -6,6 +6,7 @@ import { NotFoundError } from 'rxjs';
 import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { SearchAuditDto } from './dto/search-audit.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.STAFF)
@@ -15,32 +16,15 @@ export class AuditController {
 
     constructor(private readonly auditService: AuditService ) { }
 
-    @Get()
-    history() {
-        return this.auditService.history();
-    }
-
-    allhistory() {
-        return this.auditService.history();
-    }
-
     @Get("stats")
     stats() {
         return this.auditService.stats();
     }
 
-    @Get(':entity')
-    getEntityHistory(
-        @Param('entity') entity: AuditEntity,
+    @Get()
+    getHistory(
+        @Query() query: SearchAuditDto
     ) {
-        return this.auditService.getHistory(entity);
+        return this.auditService.getHistory(query);
     }
-
-    @Get(':entity/:id')
-    getEntityIdHistory(
-        @Param('entity') entity: AuditEntity,
-        @Param('id', ParseIntPipe) id: number,
-    ) {
-        return this.auditService.getHistory(entity, id);
-    }
-}
+};

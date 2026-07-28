@@ -20,7 +20,8 @@ export interface UpdateUserDto{
 }
 
 export interface SearchUserDto{
-    name: string, 
+    name?: string, 
+    role?: UserRole
 }
 
 export const UserRole = {

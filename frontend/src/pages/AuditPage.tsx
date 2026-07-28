@@ -1,10 +1,26 @@
 import AuditTable from "@/components/audit/AuditTable";
+import FilterSelect from "@/components/FilterSelect";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuditHistory, useAuditStats } from "@/hooks/useAudit";
+import { AuditAction, AuditEntity } from "@/types/audit.types";
+import { useState } from "react";
 
 export default function AuditPage() {
-    const { data: audits = [], isLoading: historyLoading, error: historyError } = useAuditHistory();
-    const { data: stats, isLoading: statsLoading, error: statsError } = useAuditStats();
+
+    const [action, setAction] = useState<AuditAction | undefined>(undefined);
+    const [entity, setEntity] = useState<AuditEntity | undefined>(undefined);
+
+    const {
+        data: audits = [],
+        isLoading: historyLoading,
+        error: historyError
+    } = useAuditHistory({
+        entity, action,
+    });
+
+    const {
+        data: stats, isLoading: statsLoading, error: statsError
+    } = useAuditStats();
 
     if (historyLoading || statsLoading) {
         return <h1>Loading...</h1>;
@@ -63,6 +79,28 @@ export default function AuditPage() {
                         In: {stats?.stockInToday ?? 0} | Out: {stats?.stockOutToday ?? 0}
                     </CardContent>
                 </Card>
+            </div>
+
+            <div className="flex gap-4">
+                <FilterSelect<AuditAction>
+                    value={action}
+                    onValueChange={setAction}
+                    options={Object.values(AuditAction).map((action) => ({
+                        id: action,
+                        label: action,
+                    }))}
+                    allLabel="All Actions"
+                />
+
+                <FilterSelect<AuditEntity>
+                    value={entity}
+                    onValueChange={setEntity}
+                    options={Object.values(AuditEntity).map((entity) => ({
+                        id: entity,
+                        label: entity,
+                    }))}
+                    allLabel="All Entities"
+                />
             </div>
 
             <AuditTable audits={audits} />

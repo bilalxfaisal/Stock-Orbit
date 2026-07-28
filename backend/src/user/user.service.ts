@@ -22,12 +22,11 @@ export class UserService {
                 ilike(User.name, `%${query.name}%`)
             );
         }
-
-        // if (query?.role) {
-        //     conditions.push(
-        //         eq(User.role, query.role)
-        //     );
-        // }
+        if (query?.role) {
+            conditions.push(
+                eq(User.role, query.role)
+            );
+        }
 
         return await db
             .select({

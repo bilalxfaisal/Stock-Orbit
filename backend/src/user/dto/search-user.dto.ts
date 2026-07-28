@@ -7,8 +7,7 @@ export class SearchUserDto {
     @IsString()
     name?: string;
 
-    // @IsOptional()
-    // @IsNotEmpty()
-    // @IsEnum(UserRole)
-    // role?: UserRole;
+    @IsOptional()
+    @IsEnum(UserRole)
+    role?: UserRole;
 }

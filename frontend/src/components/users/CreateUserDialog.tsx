@@ -15,7 +15,6 @@ import { Label } from "@/components/ui/label";
 import { useCreateUser } from "@/hooks/userUsers";
 import { UserRole } from "@/types/user.types";
 import { InputField } from "../InputField";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import FilterSelect from "../FilterSelect";
 
 export default function CreateUserDialog() {

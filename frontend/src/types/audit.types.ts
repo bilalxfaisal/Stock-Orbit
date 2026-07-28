@@ -19,5 +19,34 @@ export interface AuditStats {
     stockInToday: number | null;
     stockOutToday: number | null;
 }
+export const AuditAction = {
+    STOCK_IN: "STOCK_IN",
+    STOCK_OUT: "STOCK_OUT",
+    CREATE: "CREATE",
+    UPDATE: "UPDATE",
+    DELETE: "DELETE",
+    LOG_IN: "LOG_IN",
+} as const;
 
-export interface AuditSearchDto {}
+export type AuditAction =
+    typeof AuditAction[keyof typeof AuditAction];
+
+export const AuditEntity = {
+    PRODUCT: "PRODUCT",
+    PRODUCT_TYPE: "PRODUCT_TYPE",
+    CONTAINER: "CONTAINER",
+    CATEGORY: "CATEGORY",
+    WAREHOUSE: "WAREHOUSE",
+    USER: "USER",
+} as const;
+
+export type AuditEntity =
+    typeof AuditEntity[keyof typeof AuditEntity];
+
+export interface AuditSearchDto { }
+
+
+export interface SearchAuditDto {
+    action?: AuditAction,
+    entity?: AuditEntity,
+}

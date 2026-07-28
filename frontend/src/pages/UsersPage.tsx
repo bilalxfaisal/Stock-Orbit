@@ -3,16 +3,21 @@ import { useState } from "react";
 import { useUsers } from "@/hooks/userUsers";
 import CreateUserDialog from "@/components/users/CreateUserDialog";
 import UsersTable from "@/components/users/UserTable";
+import { UserRole } from "@/types/user.types";
+import FilterSelect from "@/components/FilterSelect";
 
 export default function UsersPage() {
     const [search, setSearch] = useState("");
+
+    const [role, setRole] = useState<UserRole | undefined>(undefined);
 
     const {
         data: users = [],
         isLoading,
         error,
     } = useUsers({
-        name: search
+        name: search,
+        role,
     });
 
     if (isLoading) {
@@ -34,12 +39,28 @@ export default function UsersPage() {
                 <CreateUserDialog />
             </div>
 
-            <input
-                className="border rounded px-3 py-2"
-                placeholder="Search user..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-            />
+            <div className="flex gap-6">
+                
+                <input
+                    className="border rounded px-3 py-2"
+                    placeholder="Search user..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
+                
+                <FilterSelect
+                    value={role}
+                    onValueChange={setRole}
+                    options={Object.values(UserRole).map(
+                        (role) => ({
+                            id: role,
+                            label: role,
+                        }),
+                    )}
+                    allLabel="Select role"
+                    showAllOption={true}
+                />
+            </div>
 
             <UsersTable users={users} />
         </div>
