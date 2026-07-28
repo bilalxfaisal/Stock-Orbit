@@ -7,6 +7,7 @@ import {
     ParseIntPipe,
     Patch,
     Post,
+    Query,
     UseGuards,
 } from '@nestjs/common';
 import { WarehouseService } from './warehouse.service';
@@ -16,6 +17,7 @@ import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { UserRole } from 'src/db/enums';
 import { ApiTags } from '@nestjs/swagger';
+import { SearchWarehouseDto } from './dto/search-warehouse.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags("Warehouse")
@@ -31,8 +33,10 @@ export class WarehouseController {
         UserRole.AUDITOR
     )
     @Get()
-    getAll() {
-        return this.warehouseService.getAllWarehouses();
+    getAll(
+        @Query() query: SearchWarehouseDto,
+    ) {
+        return this.warehouseService.searchWarehouses(query);
     }
 
     @Roles(

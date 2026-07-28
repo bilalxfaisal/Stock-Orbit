@@ -7,10 +7,11 @@ import {
 	ParseIntPipe,
 	Patch,
 	Post,
+	Query,
 	UseGuards,
 } from '@nestjs/common';
-import { ContainerService } from './container.service';
-import { CreateContainerDto, UpdateContainerDto } from "./dto"
+import { ContainerService} from './container.service';
+import { CreateContainerDto, UpdateContainerDto, SearchContainerDto } from "./dto"
 import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { UserRole } from 'src/db/enums';
@@ -30,8 +31,10 @@ export class ContainerController {
 		UserRole.AUDITOR
 	)
 	@Get()
-	getAllContainers() {
-		return this.containerService.getAllContainers();
+	getAll(
+		@Query() query: SearchContainerDto,
+	) {
+		return this.containerService.getAllContainers(query);
 	}
 
 	@Roles(

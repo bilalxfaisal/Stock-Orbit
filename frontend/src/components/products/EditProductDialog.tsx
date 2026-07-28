@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Button } from "./ui/button"
+import { Button } from "../ui/button"
 import type { StockOutProps } from "@/types/stock-out-props.types"
 import { StockOutReason } from "@/types/stock-out-reason.enum"
 import { useStockOutProduct } from "@/hooks/useStockOutProduct";
-import { Dialog, DialogContent } from "./ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { Label } from "./ui/label";
+import { Dialog, DialogContent } from "../ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Label } from "../ui/label";
 import { InputField } from "@/components/InputField";
 
 export default function CreateStockOutProductDialog({
@@ -18,16 +18,15 @@ export default function CreateStockOutProductDialog({
 
     const brand = product.brand;
     const model = product.model;
-    const productId = product.id;
+    const inventoryId = product.id;
     const [quantity, setQuantity] = useState<number>(1)
     const [reason, setReason] = useState<StockOutReason>(StockOutReason.SOLD)
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
 
-        console.log(productId)
         mutate({
-            productId,
+            inventoryId,
             quantity,
             reason
         }, {

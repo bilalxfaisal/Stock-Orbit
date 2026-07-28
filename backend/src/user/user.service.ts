@@ -14,32 +14,20 @@ export class UserService {
 
     constructor(private readonly auditService: AuditService) { }
 
-    async getAllUsers() {
-        return await db
-            .select({
-                id: User.id,
-                name: User.name,
-                email: User.email,
-                phoneNumber: User.phoneNumber,
-                role: User.role,
-            })
-            .from(User);
-    }
-    async searchUsers(query: SearchUserDto) {
-
+    async getUsers(query?: SearchUserDto) {
         const conditions: SQL[] = [];
 
-        if (query.name) {
+        if (query?.name) {
             conditions.push(
                 ilike(User.name, `%${query.name}%`)
             );
         }
 
-        if (query.role) {
-            conditions.push(
-                eq(User.role, query.role)
-            );
-        }
+        // if (query?.role) {
+        //     conditions.push(
+        //         eq(User.role, query.role)
+        //     );
+        // }
 
         return await db
             .select({
@@ -51,7 +39,9 @@ export class UserService {
             })
             .from(User)
             .where(
-                conditions.length ? and(...conditions) : undefined
+                conditions.length
+                    ? and(...conditions)
+                    : undefined
             );
     }
     async createUser(createUserDto: CreateUserDto) {

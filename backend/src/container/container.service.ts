@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException, Param } from '@nestjs/common';
 import { CreateContainerDto, UpdateContainerDto } from './dto';
 import { db } from 'src/db/db';
-import { Container, Product } from "src/db/schema"
-import { eq } from 'drizzle-orm';
+import { Category, Container, Inventory, Warehouse } from "src/db/schema"
+import { eq, SQL, and, ilike, gte, lte, sql } from 'drizzle-orm';
 import { AuditService } from 'src/audit/audit.service';
 import { AuditAction, AuditEntity } from 'src/db/enums';
+import { SearchContainerDto } from './dto/search-container.dto';
 
 @Injectable()
 export class ContainerService {
@@ -29,6 +30,20 @@ export class ContainerService {
             .values(createContainerDto)
             .returning()
 
+        await db
+            .update(Category)
+            .set({
+                containerCount: sql`${Category.containerCount} + 1`
+            })
+            .where(eq(Category.id, newContainer.categoryId));
+
+        await db
+            .update(Warehouse)
+            .set({
+                containerQty: sql`${Warehouse.containerQty} + 1`
+            })
+            .where(eq(Warehouse.id, newContainer.warehouseId));
+
         await this.auditService.log({
             action: AuditAction.CREATE,
             entity: AuditEntity.CONTAINER,
@@ -39,8 +54,69 @@ export class ContainerService {
         return newContainer
     }
 
-    async getAllContainers() {
-        return await db.select().from(Container);
+    async getAllContainers(query: SearchContainerDto) {
+
+        const conditions: SQL[] = [];
+
+        if (query.code) {
+            conditions.push(
+                ilike(Container.code, `%${query.code}%`)
+            );
+        }
+
+        if (query.warehouseId) {
+            conditions.push(
+                eq(Container.warehouseId, query.warehouseId)
+            );
+        }
+
+        if (query.categoryId) {
+            conditions.push(
+                eq(Container.categoryId, query.categoryId)
+            );
+        }
+
+        if (query.minCapacity) {
+            conditions.push(
+                gte(Container.maximumCapacity, query.minCapacity)
+            );
+        }
+
+        if (query.maxCapacity) {
+            conditions.push(
+                lte(Container.maximumCapacity, query.maxCapacity)
+            );
+        }
+
+        const page = query.page ?? 1;
+        const limit = query.limit ?? 10;
+        const offset = (page - 1) * limit;
+
+        return await db
+            .select({
+                id: Container.id,
+                code: Container.code,
+                maximumCapacity: Container.maximumCapacity,
+                currentCapacity: Container.currentCapacity,
+                category: Category.name,
+                warehouse: Warehouse.code,
+            })
+            .from(Container)
+            .innerJoin(
+                Category,
+                eq(Category.id, Container.categoryId),
+            )
+            .innerJoin(
+                Warehouse,
+                eq(Warehouse.id, Container.warehouseId),
+            )
+            .where(
+                conditions.length
+                    ? and(...conditions)
+                    : undefined,
+            )
+            .limit(limit)
+            .offset(offset);
     }
 
     async getContainerById(id: number) {
@@ -87,14 +163,14 @@ export class ContainerService {
             throw new NotFoundException("Container not found.");
         }
 
-        const products = await db
+        const inventories = await db
             .select()
-            .from(Product)
-            .where(eq(Product.containerId, id));
+            .from(Inventory)
+            .where(eq(Inventory.containerId, id));
 
-        if (products.length > 0) {
+        if (inventories.length > 0) {
             throw new BadRequestException(
-                "Cannot delete container because it contains products."
+                "Cannot delete container because it contains inventory records."
             );
         }
 
@@ -102,6 +178,20 @@ export class ContainerService {
             .delete(Container)
             .where(eq(Container.id, id))
             .returning();
+
+        await db
+            .update(Category)
+            .set({
+                containerCount: sql`${Category.containerCount} - 1`
+            })
+            .where(eq(Category.id, deletedContainer.categoryId));
+
+        await db
+            .update(Warehouse)
+            .set({
+                containerQty: sql`${Warehouse.containerQty} - 1`
+            })
+            .where(eq(Warehouse.id, deletedContainer.warehouseId));
 
         await this.auditService.log({
             action: AuditAction.UPDATE,

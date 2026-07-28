@@ -9,6 +9,10 @@ export class StockOutProductDto{
 
     @IsNotEmpty()
     @IsInt()
+    containerId!: number
+
+    @IsNotEmpty()
+    @IsInt()
     quantity!: number
 
     @IsNotEmpty()

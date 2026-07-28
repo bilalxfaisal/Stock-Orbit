@@ -1,12 +1,13 @@
-
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/providers/AuthProvider";
 import { Form } from "@base-ui/react";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -32,31 +33,69 @@ export default function LoginPage() {
     }
 
     return (
-        <>
-            <h1>Login</h1>
+        <div className="flex min-h-screen items-center justify-center bg-muted/30">
 
-            <Form onSubmit={handleSubmit}>
-                <div>
-                    <Label>Login Form</Label>
-                </div>
-                <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input type="email" placeholder="Enter email" value={email}
-                        onChange={(e) => setEmail(e.target.value)} />
-                </div>
+            <Card className="w-full max-w-md shadow-lg">
 
-                <br />
+                <CardHeader className="space-y-2 text-center">
+                    <CardTitle className="text-3xl">
+                        Stock Management System
+                    </CardTitle>
 
-                <div>
-                    <Label htmlFor="password">Password</Label>
-                    <Input type="password" placeholder="Enter password" value={password}
-                        onChange={(e) => setPassword(e.target.value)} />
-                </div>
+                    <CardDescription>
+                        Login to continue
+                    </CardDescription>
+                </CardHeader>
 
-                <br />
+                <CardContent>
 
-                <Button type="submit" disabled={loading}>{loading ? "Logging in..." : "Login"}</Button>
-            </Form>
-        </>
+                    <Form
+                        onSubmit={handleSubmit}
+                        className="space-y-5"
+                    >
+
+                        <div className="space-y-2">
+                            <Label htmlFor="email">
+                                Email
+                            </Label>
+
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="password">
+                                Password
+                            </Label>
+
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="Enter your password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={loading}
+                        >
+                            {loading ? "Logging in..." : "Login"}
+                        </Button>
+
+                    </Form>
+
+                </CardContent>
+
+            </Card>
+
+        </div>
     );
 }

@@ -7,6 +7,7 @@ import {
     ParseIntPipe,
     Patch,
     Post,
+    Query,
     UseGuards,
 } from '@nestjs/common';
 
@@ -17,6 +18,7 @@ import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { UserRole } from 'src/db/enums';
 import { ApiTags } from '@nestjs/swagger';
+import { SearchProductTypeDto } from './dto/search-product-type.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags("Product Type")
@@ -32,8 +34,9 @@ export class ProductTypeController {
         UserRole.AUDITOR
     )
     @Get()
-    getAll() {
-        return this.productTypeService.getAllProductTypes();
+    getAll(@Query() query?: SearchProductTypeDto) {
+        console.log("Controller : ", query)
+        return this.productTypeService.getAllProductTypes(query);
     }
 
     @Roles(
@@ -42,12 +45,12 @@ export class ProductTypeController {
         UserRole.STAFF,
         UserRole.AUDITOR
     )
-    @Get(':id')
-    getById(
-        @Param('id', ParseIntPipe) id: number,
-    ) {
-        return this.productTypeService.getProductTypeById(id);
-    }
+    // @Get(':id')
+    // getById(
+    //     @Param('id', ParseIntPipe) id: number,
+    // ) {
+    //     return this.productTypeService.getProductTypeById(id);
+    // }
 
     @Roles(
         UserRole.ADMIN,

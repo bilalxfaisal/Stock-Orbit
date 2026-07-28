@@ -1,15 +1,54 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { db } from 'src/db/db';
-import { eq } from 'drizzle-orm';
+import { eq, ilike, SQL, and } from 'drizzle-orm';
 import { Warehouse, Container } from "src/db/schema"
 import { CreateWarehouseDto, UpdateWarehouseDto } from './dto';
 import { AuditService } from 'src/audit/audit.service';
 import { AuditAction, AuditEntity } from 'src/db/enums';
+import { SearchWarehouseDto } from './dto/search-warehouse.dto';
 
 @Injectable()
 export class WarehouseService {
 
     constructor(private readonly auditService: AuditService) { }
+
+    async searchWarehouses(query: SearchWarehouseDto) {
+
+        const conditions: SQL[] = [];
+
+        if (query.code) {
+            conditions.push(
+                ilike(Warehouse.code, `%${query.code}%`)
+            );
+        }
+
+        if (query.name) {
+            conditions.push(
+                ilike(Warehouse.name, `%${query.name}%`)
+            );
+        }
+
+        if (query.location) {
+            conditions.push(
+                ilike(Warehouse.location, `%${query.location}%`)
+            );
+        }
+
+        const page = query.page ?? 1;
+        const limit = query.limit ?? 10;
+        const offset = (page - 1) * limit;
+
+        return db
+            .select()
+            .from(Warehouse)
+            .where(
+                conditions.length
+                    ? and(...conditions)
+                    : undefined
+            )
+            .limit(limit)
+            .offset(offset);
+    }
 
     async createWarehouse(createWarehouseDto: CreateWarehouseDto) {
 

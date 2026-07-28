@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { ProductType, Container, Product } from "src/db/schema";
+import { ProductType, Container, Product, Inventory, Category } from "src/db/schema";
 import { and, eq, sql } from "drizzle-orm";
 import { StockInProductDto } from "./dto";
 import { AuditAction, AuditEntity, StockOutReason } from "src/db/enums";
@@ -10,8 +10,8 @@ export class ProductHelper {
     constructor(private readonly auditService: AuditService) { }
 
     async getProductTypeOrThrow(
-        tx: any, 
-        productTypeId: number
+        tx: any,
+        productTypeId: number,
     ) {
         const [productType] = await tx
             .select()
@@ -45,21 +45,12 @@ export class ProductHelper {
         container: typeof Container.$inferSelect,
         productType: typeof ProductType.$inferSelect,
     ) {
-
-        if (
-            container.currentCapacity >=
-            container.maximumCapacity
-        ) {
+        if (container.currentCapacity >= container.maximumCapacity) {
             throw new BadRequestException("Container is full.");
         }
 
-        if (
-            container.categoryId !==
-            productType.categoryId
-        ) {
-            throw new BadRequestException(
-                "Container belongs to another category.",
-            );
+        if (container.categoryId !== productType.categoryId) {
+            throw new BadRequestException("Container belongs to another category.");
         }
     }
 
@@ -67,14 +58,10 @@ export class ProductHelper {
         container: typeof Container.$inferSelect,
         quantity: number,
     ) {
-        const remaining =
-            container.maximumCapacity -
-            container.currentCapacity;
+        const remaining = container.maximumCapacity - container.currentCapacity;
 
         if (quantity > remaining) {
-            throw new BadRequestException(
-                "Container does not have enough capacity.",
-            );
+            throw new BadRequestException("Container does not have enough capacity.");
         }
     }
 
@@ -91,27 +78,10 @@ export class ProductHelper {
                     eq(Product.brand, dto.brand),
                     eq(Product.model, dto.model),
                     eq(Product.price, dto.price),
-                    eq(Product.containerId, dto.containerId),
                 ),
             );
 
         return product;
-    }
-
-    async increaseQuantity(
-        tx: any,
-        product: typeof Product.$inferSelect,
-        quantity: number,
-    ) {
-        const [updated] = await tx
-            .update(Product)
-            .set({
-                quantity: product.quantity + quantity,
-            })
-            .where(eq(Product.id, product.id))
-            .returning();
-
-        return updated;
     }
 
     async createProduct(
@@ -120,10 +90,67 @@ export class ProductHelper {
     ) {
         const [product] = await tx
             .insert(Product)
-            .values(dto)
+            .values({
+                brand: dto.brand,
+                model: dto.model,
+                price: dto.price,
+                productTypeId: dto.productTypeId,
+            })
             .returning();
 
         return product;
+    }
+
+    async findInventoryByProductAndContainer(
+        tx: any,
+        productId: number,
+        containerId: number,
+    ) {
+        const [inventory] = await tx
+            .select()
+            .from(Inventory)
+            .where(
+                and(
+                    eq(Inventory.productId, productId),
+                    eq(Inventory.containerId, containerId),
+                ),
+            );
+
+        return inventory;
+    }
+
+    async createInventory(
+        tx: any,
+        productId: number,
+        containerId: number,
+        quantity: number,
+    ) {
+        const [inventory] = await tx
+            .insert(Inventory)
+            .values({
+                productId,
+                containerId,
+                quantity,
+            })
+            .returning();
+
+        return inventory;
+    }
+
+    async increaseInventoryQuantity(
+        tx: any,
+        inventory: typeof Inventory.$inferSelect,
+        quantity: number,
+    ) {
+        const [updated] = await tx
+            .update(Inventory)
+            .set({
+                quantity: inventory.quantity + quantity,
+            })
+            .where(eq(Inventory.id, inventory.id))
+            .returning();
+
+        return updated;
     }
 
     async updateContainerCapacity(
@@ -148,8 +175,7 @@ export class ProductHelper {
             entity: AuditEntity.PRODUCT,
             entityId: product.id,
             quantity,
-            description:
-                `Stocked in ${quantity} x product '${product.brand} ${product.model}'.`,
+            description: `Stocked in ${quantity} x product '${product.brand} ${product.model}'.`,
         });
     }
 
@@ -169,43 +195,59 @@ export class ProductHelper {
         return product;
     }
 
+    async getInventoryOrThrow(
+        tx: any,
+        productId: number,
+        containerId: number
+    ) {
+        const [inventory] = await tx
+            .select()
+            .from(Inventory)
+            .where(
+                and(
+                    eq(Inventory.productId, productId),
+                    eq(Inventory.containerId, containerId)
+                ));
+
+        if (!inventory) {
+            throw new NotFoundException("Inventory record not found.");
+        }
+
+        return inventory;
+    }
+
     validateStockOutQuantity(
-        product: typeof Product.$inferSelect,
+        inventory: typeof Inventory.$inferSelect,
         quantity: number,
     ) {
-        if (product.quantity < quantity) {
-            throw new BadRequestException(
-                "Not enough stock available.",
-            );
+        if (inventory.quantity < quantity) {
+            throw new BadRequestException("Not enough stock available.");
         }
     }
 
-    async removeProductQuantity(
+    async decreaseInventoryQuantity(
         tx: any,
-        product: typeof Product.$inferSelect,
+        inventory: typeof Inventory.$inferSelect,
         quantity: number,
     ) {
-        const remainingQuantity = product.quantity - quantity;
+        const remainingQuantity = inventory.quantity - quantity;
 
-        if (remainingQuantity === 0) {
-
-            await tx
-                .delete(Product)
-                .where(eq(Product.id, product.id));
-
+        if (remainingQuantity <= 0) {
+            await tx.delete(Inventory).where(eq(Inventory.id, inventory.id));
             return null;
         }
 
-        const [updatedProduct] = await tx
-            .update(Product)
+        const [updatedInventory] = await tx
+            .update(Inventory)
             .set({
                 quantity: remainingQuantity,
             })
-            .where(eq(Product.id, product.id))
+            .where(eq(Inventory.id, inventory.id))
             .returning();
 
-        return updatedProduct;
+        return updatedInventory;
     }
+
     async logStockOut(
         product: typeof Product.$inferSelect,
         quantity: number,
@@ -217,8 +259,37 @@ export class ProductHelper {
             entityId: product.id,
             quantity,
             reason,
-            description:
-                `Stocked out ${quantity} x product '${product.brand} ${product.model}'.`,
+            description: `Stocked out ${quantity} x product '${product.brand} ${product.model}'.`,
         });
+    }
+    async updateCategoryAndTypeCount(
+        tx: any,
+        productTypeId: number,
+        quantity: number
+    ) {
+        const [productType] = await tx
+            .select({
+                categoryId: ProductType.categoryId,
+            })
+            .from(ProductType)
+            .where(eq(ProductType.id, productTypeId));
+
+        if (!productType) {
+            throw new Error("Product type not found");
+        }
+
+        await tx
+            .update(ProductType)
+            .set({
+                productCount: sql`${ProductType.productCount} + ${quantity}`
+            })
+            .where(eq(ProductType.id, productTypeId))
+
+        await tx
+            .update(Category)
+            .set({
+                productCount: sql`${Category.productCount} + ${quantity}`,
+            })
+            .where(eq(Category.id, productType.categoryId));
     }
 }

@@ -4,12 +4,11 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 
-import { eq } from 'drizzle-orm';
+import { count, eq, and, ilike, SQL } from 'drizzle-orm';
 import { db } from 'src/db/db';
 import { Category, Product, ProductType } from "src/db/schema"
 
-import { CreateProductTypeDto } from './dto/create-product-type.dto';
-import { UpdateProductTypeDto } from './dto/update-product-type.dto';
+import { CreateProductTypeDto, SearchProductTypeDto } from './dto';
 import { AuditService } from 'src/audit/audit.service';
 import { AuditAction, AuditEntity } from 'src/db/enums';
 
@@ -61,15 +60,80 @@ export class ProductTypeService {
         return newType;
     }
 
-    async getAllProductTypes() {
-        return await db.select().from(ProductType);
+    async getAllProductTypes(dto?: SearchProductTypeDto) {
+        console.log("Backend Query : ", dto);
+        const {
+            name,
+            category,
+            page = 1,
+            limit = 10,
+        } = dto ?? {};
+
+        const offset = (page - 1) * limit;
+
+        const conditions: SQL[] = [];
+
+        if (name) {
+            conditions.push(
+                ilike(ProductType.name, `%${name}%`)
+            );
+        }
+
+        if (category) {
+            conditions.push(
+                ilike(Category.name, `%${category}%`)
+            );
+        }
+
+        const whereCondition =
+            conditions.length > 0
+                ? and(...conditions)
+                : undefined;
+
+        const [productTypes] = await ([
+            db.select({
+                id: ProductType.id,
+                name: ProductType.name,
+                category: Category.name,
+                categoryId: ProductType.categoryId,
+                productCount: ProductType.productCount,
+            })
+                .from(ProductType)
+                .innerJoin(
+                    Category,
+                    eq(Category.id, ProductType.categoryId),
+                )
+                .where(whereCondition)
+                .limit(limit)
+                .offset(offset),
+
+            // db.select({
+            //     total: count(),
+            // })
+            //     .from(ProductType)
+            //     .innerJoin(
+            //         Category,
+            //         eq(Category.id, ProductType.categoryId),
+            //     )
+            //     .where(whereCondition),
+        ]);
+
+        //const total = totalResult[0]?.total ?? 0;
+
+        return productTypes
     }
 
     async getProductTypeById(id: number) {
 
-        const [productType] = await db
-            .select()
+        const [productType] = await db.select({
+            id: ProductType.id,
+            name: ProductType.name,
+            category: Category.name,
+            categoryId: ProductType.categoryId,
+            productCount: ProductType.productCount
+        })
             .from(ProductType)
+            .innerJoin(Category, eq(Category.id, ProductType.categoryId))
             .where(eq(ProductType.id, id));
 
         if (!productType) {
@@ -96,6 +160,7 @@ export class ProductTypeService {
             .where(eq(Product.productTypeId, id));
 
         if (product) {
+            console.log(product);
             throw new BadRequestException(
                 "Cannot delete product type because it contains products."
             );

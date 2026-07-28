@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { Warehouse, Container, Category, Product, ProductType } from "src/db/schema"
+import { Warehouse, Container, Category, Product, ProductType, Inventory } from "src/db/schema"
 
 export const warehouseRelations = relations(Warehouse, ({ many }) => ({
     containers: many(Container)
@@ -10,16 +10,12 @@ export const categoryRelations = relations(Category, ({ many }) => ({
     product_types: many(ProductType),
 }))
 
-export const productRelations = relations(Product, ({ one }) => ({
-    container: one(Container, {
-        fields: [Product.containerId],
-        references: [Container.id]
-    }),
-
+export const productRelations = relations(Product, ({ one, many }) => ({
     product_type: one(ProductType, {
         fields: [Product.productTypeId],
         references: [ProductType.id]
-    })
+    }),
+    inventories: many(Inventory)
 }))
 
 export const containerRelations = relations(Container, ({ one, many }) => ({
@@ -31,7 +27,18 @@ export const containerRelations = relations(Container, ({ one, many }) => ({
         fields: [Container.categoryId],
         references: [Category.id]
     }),
-    products: many(Product)
+    inventories: many(Inventory)
+}))
+
+export const inventoryRelations = relations(Inventory, ({ one }) => ({
+    product: one(Product, {
+        fields: [Inventory.productId],
+        references: [Product.id]
+    }),
+    container: one(Container, {
+        fields: [Inventory.containerId],
+        references: [Container.id]
+    })
 }))
 
 export const productTypeRelations = relations(ProductType, ({ one, many }) => ({

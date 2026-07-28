@@ -10,9 +10,10 @@ import { AuditModule } from './audit/audit.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { InventoryModule } from './inventory/inventory.module';
 
 @Module({
-  imports: [WarehouseModule, ContainerModule, CategoryModule, ProductModule, ProductTypeModule, AuditModule, DashboardModule, UserModule, AuthModule],
+  imports: [WarehouseModule, ContainerModule, CategoryModule, ProductModule, ProductTypeModule, AuditModule, DashboardModule, UserModule, AuthModule, InventoryModule],
   controllers: [AppController],
   providers: [AppService],
 })

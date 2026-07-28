@@ -1,64 +1,135 @@
+import DashboardSection from "@/components/dashboard/DashboardSection";
+import StatCard from "@/components/dashboard/StatCard";
 import { useDashboard } from "@/hooks/useDashboard";
 
 export default function DashboardPage() {
-
     const { data, isLoading, error } = useDashboard();
 
     if (isLoading) {
         return <h1>Loading...</h1>;
     }
 
-    if (error) {
+    if (error || !data) {
         return <h1>Failed to load dashboard.</h1>;
     }
 
     return (
-        <>
-            <h1>Dashboard</h1>
+        <div className="space-y-8">
 
-            <hr />
+            <div>
+                <h1 className="text-3xl font-bold">
+                    Dashboard
+                </h1>
 
-            <h2>Products</h2>
-            <p>Total Products: {data.products.totalProducts}</p>
-            <p>Products Sold: {data.products.productsSold}</p>
+                <p className="text-muted-foreground">
+                    Warehouse overview and statistics.
+                </p>
+            </div>
 
-            <hr />
+            {/* Products */}
 
-            <h2>Containers</h2>
-            <p>Total Containers: {data.containers.totalContainers}</p>
-            <p>Full Containers: {data.containers.fullContainers}</p>
-            <p>Empty Containers: {data.containers.emptyContainers}</p>
+            <DashboardSection title="Products">
+                <StatCard
+                    title="Total Products"
+                    value={data.products.totalProducts}
+                />
 
-            <hr />
+                <StatCard
+                    title="Products Sold"
+                    value={data.products.productsSold}
+                />
+            </DashboardSection>
 
-            <h2>Warehouses</h2>
-            <p>Total Warehouses: {data.warehouses.totalWarehouses}</p>
-            <p>Empty Warehouses: {data.warehouses.emptyWarehouses}</p>
+            {/* Containers */}
 
-            <hr />
+            <DashboardSection title="Containers">
+                <StatCard
+                    title="Total Containers"
+                    value={data.containers.totalContainers}
+                />
 
-            <h2>Categories</h2>
-            <p>Total Categories: {data.categories.totalCategories}</p>
+                <StatCard
+                    title="Full Containers"
+                    value={data.containers.fullContainers}
+                />
 
-            <hr />
+                <StatCard
+                    title="Empty Containers"
+                    value={data.containers.emptyContainers}
+                />
+            </DashboardSection>
 
-            <h2>Product Types</h2>
-            <p>Total Product Types: {data.productTypes.totalProductTypes}</p>
+            {/* Warehouses */}
 
-            <hr />
+            <DashboardSection title="Warehouses">
+                <StatCard
+                    title="Total Warehouses"
+                    value={data.warehouses.totalWarehouses}
+                />
 
-            <h2>Users</h2>
-            <p>Total Users: {data.users.totalUsers}</p>
-            <p>Admins: {data.users.totalAdmins}</p>
-            <p>Managers: {data.users.totalManagers}</p>
-            <p>Staff: {data.users.totalStaff}</p>
-            <p>Auditors: {data.users.totalAuditors}</p>
+                <StatCard
+                    title="Empty Warehouses"
+                    value={data.warehouses.emptyWarehouses}
+                />
+            </DashboardSection>
 
-            <hr />
+            {/* Inventory Structure */}
 
-            <h2>Today</h2>
-            <p>Stock In Today: {data.today.stockInToday}</p>
-            <p>Stock Out Today: {data.today.stockOutToday}</p>
-        </>
+            <DashboardSection title="Inventory Structure">
+                <StatCard
+                    title="Categories"
+                    value={data.categories.totalCategories}
+                />
+
+                <StatCard
+                    title="Product Types"
+                    value={data.productTypes.totalProductTypes}
+                />
+            </DashboardSection>
+
+            {/* Users */}
+
+            <DashboardSection title="Users">
+                <StatCard
+                    title="Total Users"
+                    value={data.users.totalUsers}
+                />
+
+                <StatCard
+                    title="Admins"
+                    value={data.users.totalAdmins}
+                />
+
+                <StatCard
+                    title="Managers"
+                    value={data.users.totalManagers}
+                />
+
+                <StatCard
+                    title="Staff"
+                    value={data.users.totalStaff}
+                />
+
+                <StatCard
+                    title="Auditors"
+                    value={data.users.totalAuditors}
+                />
+            </DashboardSection>
+
+            {/* Today's Activity */}
+
+            <DashboardSection title="Today's Activity">
+                <StatCard
+                    title="Stock In Today"
+                    value={data.today.stockInToday}
+                />
+
+                <StatCard
+                    title="Stock Out Today"
+                    value={data.today.stockOutToday}
+                />
+            </DashboardSection>
+
+        </div>
     );
 }

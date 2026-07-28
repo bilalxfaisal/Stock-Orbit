@@ -16,15 +16,8 @@ export class UserController {
     constructor(private readonly userService: UserService) { }
 
     @Get()
-    getAllUsers() {
-        return this.userService.getAllUsers();
-    }
-
-    @Get("search")
-    searchUsers(
-        @Query() query: SearchUserDto,
-    ) {
-        return this.userService.searchUsers(query);
+    getUsers(@Query() query: SearchUserDto) {
+        return this.userService.getUsers(query);
     }
 
     // Only admins can create users

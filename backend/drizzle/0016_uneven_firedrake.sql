@@ -1,0 +1,1 @@
+ALTER TABLE "ProductType" ADD COLUMN "product_count" integer DEFAULT 0 NOT NULL;

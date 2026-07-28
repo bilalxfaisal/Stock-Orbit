@@ -1,6 +1,6 @@
 import { useState } from "react";
-import CreateProductDialog from "./CreateProductDialog";
-import { Button } from "./ui/button";
+import CreateProductDialog from "./StockInDialog";
+import { Button } from "../ui/button";
 
 export default function StockInButton() {
 

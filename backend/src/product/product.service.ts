@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { db } from 'src/db/db';
-import { eq, and, SQL, ilike, asc, desc, gte, lte, getTableColumns } from "drizzle-orm"
-import { Category, Container, Product, ProductType } from "src/db/schema"
+import { eq, and, SQL, ilike, asc, desc, gte, lte } from "drizzle-orm"
+import { Category, Container, Inventory, Product, ProductType } from "src/db/schema"
 import { SearchProductDto, StockInProductDto, StockOutProductDto, UpdatePriceDto } from './dto';
 import { AuditService } from 'src/audit/audit.service';
 import { ProductHelper } from './product.helper';
@@ -20,8 +20,6 @@ export class ProductService {
 
         const conditions: SQL[] = [];
 
-        // ---------- Filters ----------
-
         if (query.categoryId) {
             conditions.push(
                 eq(ProductType.categoryId, Number(query.categoryId))
@@ -31,12 +29,6 @@ export class ProductService {
         if (query.productTypeId) {
             conditions.push(
                 eq(Product.productTypeId, Number(query.productTypeId))
-            );
-        }
-
-        if (query.containerId) {
-            conditions.push(
-                eq(Product.containerId, Number(query.containerId))
             );
         }
 
@@ -64,30 +56,25 @@ export class ProductService {
             );
         }
 
-        if (query.minQuantity) {
-            conditions.push(
-                gte(Product.quantity, query.minQuantity)
-            );
-        }
+        // if (query.minQuantity) {
+        //     conditions.push(
+        //         gte(Inventory.quantity, query.minQuantity)
+        //     );
+        // }
 
-        if (query.maxQuantity) {
-            conditions.push(
-                lte(Product.quantity, query.maxQuantity)
-            );
-        }
-
-        // ---------- Pagination ----------
+        // if (query.maxQuantity) {
+        //     conditions.push(
+        //         lte(Inventory.quantity, query.maxQuantity)
+        //     );
+        // }
 
         const page = query.page ?? 1;
         const limit = query.limit ?? 10;
         const offset = (page - 1) * limit;
 
-        // ---------- Sorting ----------
-
         let orderBy = asc(Product.id);
 
         if (query.sortBy) {
-
             const direction = query.order === "desc" ? desc : asc;
 
             switch (query.sortBy) {
@@ -103,38 +90,24 @@ export class ProductService {
                     orderBy = direction(Product.price);
                     break;
 
-                case "quantity":
-                    orderBy = direction(Product.quantity);
-                    break;
+                // case "quantity":
+                //     orderBy = direction(Inventory.quantity);
+                //     break;
             }
         }
-
-        // ---------- Query ----------
 
         const products = await db
             .select({
                 id: Product.id,
                 model: Product.model,
                 brand: Product.brand,
-                quantity: Product.quantity,
                 price: Product.price,
                 category: Category.name,
                 productType: ProductType.name,
-                container: Container.code
             })
             .from(Product)
-            .innerJoin(
-                ProductType,
-                eq(Product.productTypeId, ProductType.id),
-            )
-            .innerJoin(
-                Category,
-                eq(Category.id, ProductType.categoryId)
-            )
-            .innerJoin(
-                Container,
-                eq(Container.id, Product.containerId)
-            )
+            .innerJoin(ProductType, eq(ProductType.id, Product.productTypeId))
+            .innerJoin(Category, eq(Category.id, ProductType.categoryId))
             .where(
                 conditions.length ? and(...conditions) : undefined,
             )
@@ -183,49 +156,62 @@ export class ProductService {
 
         return updatedProduct;
     }
-    // Stock In and Stock Out 
 
     async stockIn(dto: StockInProductDto) {
 
         return db.transaction(async (tx) => {
-
             const productType = await this.helper.getProductTypeOrThrow(tx, dto.productTypeId);
             const container = await this.helper.getContainerOrThrow(tx, dto.containerId);
             this.helper.validateContainer(container, productType);
             this.helper.validateCapacity(container, dto.quantity);
-            const existing = await this.helper.findExistingProduct(tx, dto);
-            if (existing) {
-                const updated = await this.helper.increaseQuantity(tx, existing, dto.quantity);
-                await this.helper.updateContainerCapacity(tx, container.id, dto.quantity);
-                await this.helper.logStockIn(updated, dto.quantity);
-                return updated;
+
+            let product = await this.helper.findExistingProduct(tx, dto);
+
+            if (!product) {
+                product = await this.helper.createProduct(tx, dto);
             }
-            const product = await this.helper.createProduct(tx, dto);
+
+            let inventory = await this.helper.findInventoryByProductAndContainer(tx, product.id, dto.containerId);
+
+            if (!inventory) {
+                inventory = await this.helper.createInventory(tx, product.id, dto.containerId, dto.quantity);
+            } else {
+                inventory = await this.helper.increaseInventoryQuantity(tx, inventory, dto.quantity);
+            }
+
             await this.helper.updateContainerCapacity(tx, container.id, dto.quantity);
+            await this.helper.updateCategoryAndTypeCount(tx, productType.id, dto.quantity)
             await this.helper.logStockIn(product, dto.quantity);
-            return product;
+
+            return {
+                message: "Stock in completed successfully.",
+                product,
+                inventory,
+            };
         });
     }
 
     async stockOut(stockOutDto: StockOutProductDto) {
 
         return await db.transaction(async (tx) => {
+            const inventory = await this.helper.getInventoryOrThrow(tx, stockOutDto.productId, stockOutDto.containerId);
+            const product = await this.helper.getProductOrThrow(tx, inventory.productId);
+            const productType = await this.helper.getProductTypeOrThrow(tx, product.productTypeId)
+            this.helper.validateStockOutQuantity(inventory, stockOutDto.quantity);
+            const container = await this.helper.getContainerOrThrow(tx, inventory.containerId);
 
-            const product = await this.helper.getProductOrThrow(tx, stockOutDto.productId);
-            this.helper.validateStockOutQuantity(product, stockOutDto.quantity);
-            const container = await this.helper.getContainerOrThrow(tx, product.containerId);
-            const removedProduct = {
-                ...product,
-                quantity: stockOutDto.quantity,
-                reason: stockOutDto.reason,
-            };
-            await this.helper.removeProductQuantity(tx, product, stockOutDto.quantity);
+            const updatedInventory = await this.helper.decreaseInventoryQuantity(tx, inventory, stockOutDto.quantity);
+            const responseInventory = updatedInventory ?? { ...inventory, quantity: 0 };
+
             await this.helper.updateContainerCapacity(tx, container.id, -stockOutDto.quantity);
-            await this.helper.logStockOut(removedProduct, stockOutDto.quantity, stockOutDto.reason);
+            await this.helper.updateCategoryAndTypeCount(tx, productType.id, -stockOutDto.quantity)
+            await this.helper.logStockOut(product, stockOutDto.quantity, stockOutDto.reason);
+
             return {
                 message: "Stock out completed successfully.",
                 reason: stockOutDto.reason,
-                product: removedProduct,
+                product,
+                inventory: responseInventory,
             };
         });
     }

@@ -14,7 +14,6 @@ export function InputField({
   return (
     <>
       <Label>{label}</Label>
-      <br />
 
       <Input
         type={type}
@@ -24,8 +23,6 @@ export function InputField({
         onChange={onChange}
         className={className}
       />
-
-      <br />
       <br />
     </>
   );

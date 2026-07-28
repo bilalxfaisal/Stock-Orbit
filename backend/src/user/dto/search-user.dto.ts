@@ -4,12 +4,11 @@ import { UserRole } from "src/db/enums";
 export class SearchUserDto {
 
     @IsOptional()
-    @IsNotEmpty()
     @IsString()
     name?: string;
 
-    @IsOptional()
-    @IsNotEmpty()
-    @IsEnum(UserRole)
-    role?: UserRole;
+    // @IsOptional()
+    // @IsNotEmpty()
+    // @IsEnum(UserRole)
+    // role?: UserRole;
 }
