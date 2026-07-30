@@ -19,6 +19,7 @@ export interface UpdateWarehouseDto {
 }
 
 export interface SearchWarehouseDto {
+    id?: number;
     code?: string;
     name?: string;
     location?: string;

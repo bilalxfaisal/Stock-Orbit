@@ -24,10 +24,10 @@ export default function ProductTypeTable({ inventory }: Props) {
                     <TableHead>Model</TableHead>
                     <TableHead>Brand</TableHead>
                     <TableHead>Quantity</TableHead>
-                    <TableHead>Price</TableHead>
+                    {/* <TableHead>Price</TableHead> */}
                     <TableHead>Container</TableHead>
                     <TableHead>Product Type</TableHead>
-                    <TableHead>Container</TableHead>
+                    <TableHead>Category</TableHead>
                 </TableRow>
             </TableHeader>
 
@@ -37,7 +37,7 @@ export default function ProductTypeTable({ inventory }: Props) {
                         <TableCell>{inventory.model}</TableCell>
                         <TableCell>{inventory.brand}</TableCell>
                         <TableCell>{inventory.quantity}</TableCell>
-                        <TableCell>{inventory.price}</TableCell>
+                        {/* <TableCell>{inventory.price}</TableCell> */}
                         <TableCell>{inventory.container}</TableCell>
                         <TableCell>{inventory.productType}</TableCell>
                         <TableCell>{inventory.category}</TableCell>

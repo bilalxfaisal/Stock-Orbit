@@ -13,8 +13,11 @@ import { Button } from "@/components/ui/button";
 
 import { useCreateWarehouse } from "@/hooks/useWarehouses";
 import { InputField } from "../InputField";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function CreateWarehouseDialog() {
+
+    const {can} = usePermission();
     const createWarehouse = useCreateWarehouse();
 
     const [open, setOpen] = useState(false);
@@ -48,7 +51,7 @@ export default function CreateWarehouseDialog() {
     return (
         <Dialog open={open} onOpenChange={setOpen} >
             <DialogTrigger
-                render={<Button />}
+                render={<Button disabled={!can("createWarehouse")}/>}
             >
                 Create Warehouse
             </DialogTrigger>

@@ -65,6 +65,7 @@ export class ProductTypeService {
         const {
             name,
             category,
+            categoryId,
             page = 1,
             limit = 10,
         } = dto ?? {};
@@ -83,6 +84,12 @@ export class ProductTypeService {
             conditions.push(
                 ilike(Category.name, `%${category}%`)
             );
+        }
+
+        if(categoryId) {
+            conditions.push(
+                eq(Category.id, categoryId)
+            )
         }
 
         const whereCondition =

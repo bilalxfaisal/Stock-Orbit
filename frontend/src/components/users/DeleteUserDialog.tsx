@@ -14,12 +14,16 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { useDeleteUser } from "@/hooks/userUsers";
+import { usePermission } from "@/hooks/usePermission";
 
 interface Props {
     id: number;
 }
 
 export default function DeleteUserDialog({ id }: Props) {
+
+    const {can} = usePermission();
+
     const deleteUser = useDeleteUser();
 
     async function handleDelete() {
@@ -33,7 +37,7 @@ export default function DeleteUserDialog({ id }: Props) {
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger render={<Button />}>Delete</AlertDialogTrigger>
+            <AlertDialogTrigger render={<Button disabled={!can("deleteUser")}/>}>Delete</AlertDialogTrigger>
 
             <AlertDialogContent>
                 <AlertDialogHeader>

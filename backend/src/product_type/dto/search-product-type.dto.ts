@@ -7,6 +7,12 @@ import {
 } from "class-validator";
 
 export class SearchProductTypeDto {
+    
+    @IsOptional()
+    @IsNumber()
+    @Type(() => Number)
+    categoryId?: number;
+    
     @IsOptional()
     @IsString()
     name?: string;

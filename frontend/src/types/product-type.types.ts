@@ -12,9 +12,9 @@ export interface CreateProductTypeDto {
 }
 
 export interface SearchProductTypeDto {
+    categoryId?: number;
     name?: string;
     category?: string;
-    categoryId?: number;
     page?: number;
     limit?: number;
 }

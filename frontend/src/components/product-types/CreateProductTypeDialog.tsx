@@ -16,8 +16,11 @@ import { InputField } from "../InputField";
 import { useCategories } from "@/hooks/useCategories";
 import FilterSelect from "../FilterSelect";
 import { Label } from "../ui/label";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function CreateProductTypeDialog() {
+
+    const {can} = usePermission();
     const createProductType = useCreateProductType();
 
     const [open, setOpen] = useState(false);
@@ -50,7 +53,7 @@ export default function CreateProductTypeDialog() {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger render={<Button />}>Create Product Type</DialogTrigger>
+            <DialogTrigger render={<Button disabled={!can("createProductType")}/>}>Create Product Type</DialogTrigger>
 
             <DialogContent>
                 <DialogHeader>

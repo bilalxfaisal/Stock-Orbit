@@ -17,8 +17,11 @@ import { useStockOutProduct } from "@/hooks/useProducts";
 import { StockOutReason, type Product } from "@/types/products.types";
 import { useInventory } from "@/hooks/useInventory";
 import FilterSelect from "../FilterSelect";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function StockOutProductDialog({ product }: { product: Product }) {
+
+    const {can} = usePermission();
 
     console.log("Product received:", product);
 
@@ -72,7 +75,7 @@ export default function StockOutProductDialog({ product }: { product: Product })
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger render={<Button />}>Stock Out</DialogTrigger>
+            <DialogTrigger render={<Button disabled={!can("stockOut")}/>}>Stock Out</DialogTrigger>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>

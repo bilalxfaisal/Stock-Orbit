@@ -1,9 +1,10 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 import { login as loginRequest } from "@/api/auth.api";
+import type { UserRole } from "@/types/user.types";
 
 type AuthUser = {
   email: string;
-  role: string;
+  role: UserRole;
 };
 
 type AuthContextType = {
@@ -48,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       return {
         email: payload.email,
-        role: payload.role,
+        role: payload.role as UserRole,
       } as AuthUser;
     } catch {
       return null;

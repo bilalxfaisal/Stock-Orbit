@@ -17,8 +17,10 @@ import { useCategories } from "@/hooks/useCategories";
 import { useWarehouses } from "@/hooks/useWarehouses";
 import FilterSelect from "@/components/FilterSelect";
 import { Label } from "../ui/label";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function CreateContainerDialog() {
+    const {can} = usePermission();
     const createContainer = useCreateContainer();
 
     const [open, setOpen] = useState(false);
@@ -75,7 +77,7 @@ export default function CreateContainerDialog() {
     return (
         <Dialog open={open} onOpenChange={setOpen} >
             <DialogTrigger
-                render={<Button />}
+                render={<Button disabled={!can("createContainer")}/>}
             >
                 Create Container
             </DialogTrigger>

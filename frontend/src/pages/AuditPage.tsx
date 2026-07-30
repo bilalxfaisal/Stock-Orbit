@@ -2,10 +2,18 @@ import AuditTable from "@/components/audit/AuditTable";
 import FilterSelect from "@/components/FilterSelect";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuditHistory, useAuditStats } from "@/hooks/useAudit";
+import { useAuth } from "@/providers/AuthProvider";
 import { AuditAction, AuditEntity } from "@/types/audit.types";
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
 
 export default function AuditPage() {
+
+    const { user } = useAuth();
+
+    if (user?.role === "AUDITOR") {
+        return <Navigate to="/" replace />;
+    }
 
     const [action, setAction] = useState<AuditAction | undefined>(undefined);
     const [entity, setEntity] = useState<AuditEntity | undefined>(undefined);

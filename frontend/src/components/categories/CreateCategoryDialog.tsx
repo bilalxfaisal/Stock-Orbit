@@ -13,8 +13,10 @@ import { Button } from "@/components/ui/button";
 
 import { useCreateCategory } from "@/hooks/useCategories";
 import { InputField } from "../InputField";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function CreateCategoryDialog() {
+    const {can} = usePermission();
     const createCategory = useCreateCategory();
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("");
@@ -34,7 +36,7 @@ export default function CreateCategoryDialog() {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger render={<Button />}>Create Category</DialogTrigger>
+            <DialogTrigger render={<Button disabled={!can("createCategory")}/>}>Create Category</DialogTrigger>
 
             <DialogContent>
                 <DialogHeader>

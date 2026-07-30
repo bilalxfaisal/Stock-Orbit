@@ -16,6 +16,11 @@ export class WarehouseService {
 
         const conditions: SQL[] = [];
 
+        if (query.id) {
+            conditions.push(
+                eq(Warehouse.id, query.id)
+            );
+        }
         if (query.code) {
             conditions.push(
                 ilike(Warehouse.code, `%${query.code}%`)

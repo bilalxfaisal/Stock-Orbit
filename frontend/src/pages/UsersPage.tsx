@@ -5,10 +5,11 @@ import CreateUserDialog from "@/components/users/CreateUserDialog";
 import UsersTable from "@/components/users/UserTable";
 import { UserRole } from "@/types/user.types";
 import FilterSelect from "@/components/FilterSelect";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function UsersPage() {
     const [search, setSearch] = useState("");
-
+    const { can } = usePermission();
     const [role, setRole] = useState<UserRole | undefined>(undefined);
 
     const {

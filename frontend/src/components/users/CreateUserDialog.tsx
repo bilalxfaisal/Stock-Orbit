@@ -16,8 +16,10 @@ import { useCreateUser } from "@/hooks/userUsers";
 import { UserRole } from "@/types/user.types";
 import { InputField } from "../InputField";
 import FilterSelect from "../FilterSelect";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function CreateUserDialog() {
+    const { can } = usePermission();
     const createUser = useCreateUser();
     const [open, setOpen] = useState(false)
     const [name, setName] = useState("");
@@ -47,7 +49,8 @@ export default function CreateUserDialog() {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger render={<Button />}>Create User</DialogTrigger>
+            <DialogTrigger render={<Button disabled={!can("createUser")}
+            />}>Create User</DialogTrigger>
 
             <DialogContent>
                 <DialogHeader>

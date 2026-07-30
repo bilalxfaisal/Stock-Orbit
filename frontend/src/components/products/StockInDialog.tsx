@@ -17,8 +17,11 @@ import { useProductTypes } from "@/hooks/useProductTypes";
 import { useContainers } from "@/hooks/useContainers";
 import FilterSelect from "../FilterSelect";
 import { Label } from "../ui/label";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function CreateProductDialog() {
+
+    const { can } = usePermission();
 
     // Stock-in mutation
 
@@ -153,7 +156,7 @@ export default function CreateProductDialog() {
         >
 
             <DialogTrigger
-                render={<Button />}
+                render={<Button disabled={!can("stockIn")}/>}
             >
                 Stock In Product
             </DialogTrigger>

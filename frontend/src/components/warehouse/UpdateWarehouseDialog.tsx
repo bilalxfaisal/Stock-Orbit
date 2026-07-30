@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 
 import { useUpdateWarehouse } from "@/hooks/useWarehouses";
 import type { Warehouse } from "@/types/warehouse.types";
+import { usePermission } from "@/hooks/usePermission";
 
 interface Props {
     warehouse: Warehouse;
@@ -23,6 +24,7 @@ interface Props {
 export default function UpdateWarehouseDialog({
     warehouse,
 }: Props) {
+    const {can} = usePermission();
     const updateWarehouse = useUpdateWarehouse();
 
     const [open, setOpen] = useState(false);
@@ -60,7 +62,7 @@ export default function UpdateWarehouseDialog({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger
-                render={<Button />}
+                render={<Button disabled={!can("updateWarehouse")}/>}
             >
                 Edit
             </DialogTrigger>

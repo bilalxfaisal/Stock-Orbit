@@ -18,7 +18,10 @@ export class AuditController {
 
     @Get("stats")
     stats() {
-        return this.auditService.stats();
+        console.log("Reached");
+        const result = this.auditService.stats();
+        console.log(result);
+        return result;
     }
 
     @Get()

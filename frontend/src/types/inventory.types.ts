@@ -14,6 +14,9 @@ export interface Inventory {
 export interface SearchInventoryDto {
     model?: string, 
     brand?: string, 
+    containerId?: number,
+    categoryId?: number,
+    productTypeId?: number,
 }
 
 // "id": 4,

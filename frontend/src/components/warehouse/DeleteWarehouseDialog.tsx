@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { useDeleteWarehouse } from "@/hooks/useWarehouses";
+import { usePermission } from "@/hooks/usePermission";
 
 interface Props {
     id: number;
@@ -23,6 +24,8 @@ interface Props {
 export default function DeleteWarehouseDialog({
     id,
 }: Props) {
+
+    const {can} = usePermission();
     const deleteWarehouse = useDeleteWarehouse();
 
     async function handleDelete() {
@@ -38,7 +41,7 @@ export default function DeleteWarehouseDialog({
     return (
         <AlertDialog>
             <AlertDialogTrigger
-                render={<Button />}
+                render={<Button disabled={!can("deleteWarehouse")}/>}
             >
                 Delete
             </AlertDialogTrigger>

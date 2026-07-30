@@ -14,12 +14,14 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { useDeleteCategory } from "@/hooks/useCategories";
+import { usePermission } from "@/hooks/usePermission";
 
 interface Props {
     id: number;
 }
 
 export default function DeleteCategoryDialog({ id }: Props) {
+    const {can} = usePermission();
     const deleteCategory = useDeleteCategory();
 
     async function handleDelete() {
@@ -33,7 +35,7 @@ export default function DeleteCategoryDialog({ id }: Props) {
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger render={<Button />}>Delete</AlertDialogTrigger>
+            <AlertDialogTrigger render={<Button disabled={!can("deleteCategory")}/>}>Delete</AlertDialogTrigger>
 
             <AlertDialogContent>
                 <AlertDialogHeader>

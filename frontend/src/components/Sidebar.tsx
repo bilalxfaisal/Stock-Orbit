@@ -60,12 +60,16 @@ const links = [
         title: "Audit Logs",
         href: "/audit",
         icon: ClipboardList,
+
+        // Only these roles can see this link
+        roles: ["ADMIN", "MANAGER", "STAFF"],
     },
 ];
 
 export default function Sidebar() {
+
     const location = useLocation();
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
 
     return (
         <aside className="flex h-full flex-col">
@@ -79,6 +83,13 @@ export default function Sidebar() {
             <nav className="flex-1 p-4 space-y-2">
 
                 {links.map((link) => {
+
+                    if (
+                        link.roles &&
+                        !link.roles.includes(user?.role ?? "")
+                    ) {
+                        return null;
+                    }
 
                     const Icon = link.icon;
 

@@ -66,9 +66,9 @@ export default function ContainersTable({
 
                         <TableCell className="flex justify-end gap-2">
 
-                            <UpdateContainerDialog
+                            {/* <UpdateContainerDialog
                                 container={containers}
-                            />
+                            /> */}
 
                             <DeleteContainerDialog
                                 id={containers.id}

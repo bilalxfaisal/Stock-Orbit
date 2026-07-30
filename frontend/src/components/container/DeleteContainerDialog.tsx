@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { useDeleteContainer } from "@/hooks/useContainers";
+import { usePermission } from "@/hooks/usePermission";
 
 interface Props {
     id: number;
@@ -23,6 +24,8 @@ interface Props {
 export default function DeleteContainerDialog({
     id,
 }: Props) {
+
+    const {can} = usePermission();
     const deleteContainer = useDeleteContainer();
 
     async function handleDelete() {
@@ -38,7 +41,7 @@ export default function DeleteContainerDialog({
     return (
         <AlertDialog>
             <AlertDialogTrigger
-                render={<Button />}
+                render={<Button disabled={!can("deleteContainer")}/>}
             >
                 Delete
             </AlertDialogTrigger>
