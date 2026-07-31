@@ -4,12 +4,13 @@ import { toast } from "sonner";
 import { Form } from "@base-ui/react";
 import { Layers, Package, Warehouse, ClipboardCheck } from "lucide-react";
 
-import stockSphereOrangeLogo from "@/components/assets/stock-sphere-logo-orange.svg"
+import stockSphereOrangeLogo from "@/components/assets/stock-sphere-logo.png"
 import stockSphereBlueLogo from "@/components/assets/stock-sphere-logo-orange.svg"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/providers/AuthProvider";
+import FilterToolbar from "@/components/FilterToolbar";
 
 export default function LoginPage() {
     const navigate = useNavigate();

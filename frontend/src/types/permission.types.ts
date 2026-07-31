@@ -35,7 +35,10 @@ export type Permission =
 
     | "viewInventory"
 
-    | "viewAudit";
+    | "viewAudit"
+
+    | "viewSettings"
+    | "updateSettings";
 
 export const permissions: Record<UserRole, Permission[]> = {
 
@@ -75,25 +78,52 @@ export const permissions: Record<UserRole, Permission[]> = {
         "viewInventory",
 
         "viewAudit",
+
+        "viewSettings",
+        "updateSettings",
     ],
 
     [UserRole.MANAGER]: [
+        "viewUsers",
+
+        "viewWarehouses",
+        "createWarehouse",
+        "updateWarehouse",
+
+        "viewCategories",
+        "createCategory",
+        "updateCategory",
+
+        "viewContainers",
+        "createContainer",
+        "updateContainer",
+
+        "viewProductTypes",
+        "createProductType",
+        "updateProductType",
+
+        "viewProducts",
+        "createProduct",
+        "updateProduct",
+
+        "stockIn",
+        "stockOut",
+
+        "viewInventory",
+
+        "viewAudit",
+    ],
+
+    [UserRole.STAFF]: [
+        "viewUsers",
+
         "viewWarehouses",
         "viewCategories",
         "viewContainers",
         "viewProductTypes",
 
         "viewProducts",
-        "createProduct",
-        "updateProduct",
-        "stockIn",
-        "stockOut",
 
-        "viewInventory",
-    ],
-
-    [UserRole.STAFF]: [
-        "viewProducts",
         "stockIn",
         "stockOut",
 
@@ -101,11 +131,17 @@ export const permissions: Record<UserRole, Permission[]> = {
     ],
 
     [UserRole.AUDITOR]: [
+        "viewUsers",
+
         "viewWarehouses",
         "viewCategories",
         "viewContainers",
         "viewProductTypes",
+
         "viewProducts",
+
         "viewInventory",
+
+        "viewAudit",
     ],
 };
