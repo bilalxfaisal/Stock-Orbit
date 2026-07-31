@@ -8,8 +8,8 @@ export default function DashboardSection({
     children,
 }: DashboardSectionProps) {
     return (
-        <section className="space-y-4">
-            <h2 className="text-xl font-semibold">
+        <section className="space-y-3">
+            <h2 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
                 {title}
             </h2>
 

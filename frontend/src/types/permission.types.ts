@@ -107,6 +107,5 @@ export const permissions: Record<UserRole, Permission[]> = {
         "viewProductTypes",
         "viewProducts",
         "viewInventory",
-        "viewAudit",
     ],
 };

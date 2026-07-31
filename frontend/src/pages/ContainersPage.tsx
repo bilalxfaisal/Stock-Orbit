@@ -6,7 +6,10 @@ import ContainerTable from "@/components/container/ContainerTable";
 import FilterSelect from "@/components/FilterSelect";
 import { useCategories } from "@/hooks/useCategories";
 import { useWarehouses } from "@/hooks/useWarehouses";
-import { Input } from "@/components/ui/input";
+import PageHeader from "@/components/PageHeader";
+import FilterToolbar from "@/components/FilterToolbar";
+import SearchInput from "@/components/SearchInput";
+import { PageLoadingState, ErrorState } from "@/components/PageStates";
 
 export default function ContainersPage() {
 
@@ -17,7 +20,6 @@ export default function ContainersPage() {
     const {
         data: containers,
         isLoading,
-        isFetching,
         error,
     } = useContainers({
         code: search,
@@ -36,66 +38,56 @@ export default function ContainersPage() {
     });
 
     if (isLoading) {
-        return <h1>Loading...</h1>;
-    }
-
-    if (error) {
-        return <h1>Failed to load containers.</h1>;
+        return <PageLoadingState />;
     }
 
     return (
         <div className="space-y-6">
 
-            <div className="flex items-center justify-between">
-
-                <div>
-                    <h1 className="text-3xl font-bold">
-                        Containers
-                    </h1>
-
-                    <p className="text-muted-foreground">
-                        Manage all containers.
-                    </p>
-                </div>
-
-                <CreateContainerDialog />
-
-            </div >
-
-            <div className="flex gap-4">
-                <Input
-                    className="border rounded px-3 py-2"
-                    placeholder="Search container..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                />
-
-                <FilterSelect
-                    value={categoryId}
-                    onValueChange={setCategoryId}
-                    options={categories.map((category) => ({
-                        id: category.id,
-                        label: category.name,
-                    }))}
-                    allLabel="All categories"
-                />
-
-                <FilterSelect
-                    value={warehouseId}
-                    onValueChange={setWarehouseId}
-                    options={warehouses.map((warehouse) => ({
-                        id: warehouse.id,
-                        label: `${warehouse.code} - ${warehouse.name}`,
-                    }))}
-                    allLabel="All warehouses"
-                />
-            </div>
-
-            {isFetching}
-
-            <ContainerTable
-                containers={containers ?? []}
+            <PageHeader
+                title="Containers"
+                description="Manage all containers."
+                action={<CreateContainerDialog />}
             />
+
+            {error ? (
+                <ErrorState description="We couldn't load containers. Try adjusting your filters or refreshing the page." />
+            ) : (
+                <>
+                    <FilterToolbar>
+                        <SearchInput
+                            placeholder="Search container..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            containerClassName="flex-1 min-w-[160px]"
+                        />
+
+                        <FilterSelect
+                            value={categoryId}
+                            onValueChange={setCategoryId}
+                            options={categories.map((category) => ({
+                                id: category.id,
+                                label: category.name,
+                            }))}
+                            allLabel="All categories"
+                        />
+
+                        <FilterSelect
+                            value={warehouseId}
+                            onValueChange={setWarehouseId}
+                            options={warehouses.map((warehouse) => ({
+                                id: warehouse.id,
+                                label: `${warehouse.code} - ${warehouse.name}`,
+                            }))}
+                            allLabel="All warehouses"
+                        />
+                    </FilterToolbar>
+
+                    <ContainerTable
+                        containers={containers ?? []}
+                    />
+                </>
+            )}
 
         </div>
     );

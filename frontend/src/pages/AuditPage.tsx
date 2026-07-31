@@ -1,19 +1,28 @@
+import { Navigate } from "react-router-dom";
+import { useState } from "react";
+import {
+    Warehouse,
+    Tags,
+    Container,
+    Layers,
+    Package,
+    ArrowDownToLine,
+    ArrowUpFromLine,
+} from "lucide-react";
+
 import AuditTable from "@/components/audit/AuditTable";
 import FilterSelect from "@/components/FilterSelect";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import StatCard from "@/components/dashboard/StatCard";
+import PageHeader from "@/components/PageHeader";
+import FilterToolbar from "@/components/FilterToolbar";
+import { PageLoadingState, ErrorState } from "@/components/PageStates";
 import { useAuditHistory, useAuditStats } from "@/hooks/useAudit";
 import { useAuth } from "@/providers/AuthProvider";
 import { AuditAction, AuditEntity } from "@/types/audit.types";
-import { useState } from "react";
-import { Navigate } from "react-router-dom";
 
 export default function AuditPage() {
 
     const { user } = useAuth();
-
-    if (user?.role === "AUDITOR") {
-        return <Navigate to="/" replace />;
-    }
 
     const [action, setAction] = useState<AuditAction | undefined>(undefined);
     const [entity, setEntity] = useState<AuditEntity | undefined>(undefined);
@@ -30,88 +39,101 @@ export default function AuditPage() {
         data: stats, isLoading: statsLoading, error: statsError
     } = useAuditStats();
 
-    if (historyLoading || statsLoading) {
-        return <h1>Loading...</h1>;
+    if (user?.role === "AUDITOR") {
+        return <Navigate to="/" replace />;
     }
 
-    if (historyError || statsError) {
-        return <h1>Failed to load audit logs.</h1>;
+    if (historyLoading || statsLoading) {
+        return <PageLoadingState />;
     }
 
     return (
         <div className="space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold">Audit Logs</h1>
-                <p className="text-muted-foreground">Recent system activity and inventory events.</p>
-            </div>
+            <PageHeader
+                title="Audit Logs"
+                description="Recent system activity and inventory events."
+            />
 
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Warehouses</CardTitle>
-                    </CardHeader>
-                    <CardContent>{stats?.totalWarehouses ?? 0}</CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Categories</CardTitle>
-                    </CardHeader>
-                    <CardContent>{stats?.totalCategories ?? 0}</CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Containers</CardTitle>
-                    </CardHeader>
-                    <CardContent>{stats?.totalContainers ?? 0}</CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Product Types</CardTitle>
-                    </CardHeader>
-                    <CardContent>{stats?.totalProductTypes ?? 0}</CardContent>
-                </Card>
-            </div>
+            {(historyError || statsError) ? (
+                <ErrorState description="We couldn't load audit data. Try adjusting your filters or refreshing the page." />
+            ) : (
+                <>
+                    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                        <StatCard
+                            title="Warehouses"
+                            value={stats?.totalWarehouses ?? 0}
+                            icon={Warehouse}
+                            accent="primary"
+                        />
+                        <StatCard
+                            title="Categories"
+                            value={stats?.totalCategories ?? 0}
+                            icon={Tags}
+                            accent="primary"
+                        />
+                        <StatCard
+                            title="Containers"
+                            value={stats?.totalContainers ?? 0}
+                            icon={Container}
+                            accent="primary"
+                        />
+                        <StatCard
+                            title="Product Types"
+                            value={stats?.totalProductTypes ?? 0}
+                            icon={Layers}
+                            accent="primary"
+                        />
+                    </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Products</CardTitle>
-                    </CardHeader>
-                    <CardContent>{stats?.totalProducts ?? 0}</CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Today&apos;s Stock Movement</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        In: {stats?.stockInToday ?? 0} | Out: {stats?.stockOutToday ?? 0}
-                    </CardContent>
-                </Card>
-            </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <StatCard
+                            title="Products"
+                            value={stats?.totalProducts ?? 0}
+                            icon={Package}
+                            accent="primary"
+                        />
 
-            <div className="flex gap-4">
-                <FilterSelect<AuditAction>
-                    value={action}
-                    onValueChange={setAction}
-                    options={Object.values(AuditAction).map((action) => ({
-                        id: action,
-                        label: action,
-                    }))}
-                    allLabel="All Actions"
-                />
+                        <div className="grid grid-cols-2 gap-4">
+                            <StatCard
+                                title="Stock In Today"
+                                value={stats?.stockInToday ?? 0}
+                                icon={ArrowDownToLine}
+                                accent="success"
+                            />
+                            <StatCard
+                                title="Stock Out Today"
+                                value={stats?.stockOutToday ?? 0}
+                                icon={ArrowUpFromLine}
+                                accent="warning"
+                            />
+                        </div>
+                    </div>
 
-                <FilterSelect<AuditEntity>
-                    value={entity}
-                    onValueChange={setEntity}
-                    options={Object.values(AuditEntity).map((entity) => ({
-                        id: entity,
-                        label: entity,
-                    }))}
-                    allLabel="All Entities"
-                />
-            </div>
+                    <FilterToolbar>
+                        <FilterSelect<AuditAction>
+                            value={action}
+                            onValueChange={setAction}
+                            options={Object.values(AuditAction).map((action) => ({
+                                id: action,
+                                label: action,
+                            }))}
+                            allLabel="All Actions"
+                        />
 
-            <AuditTable audits={audits} />
+                        <FilterSelect<AuditEntity>
+                            value={entity}
+                            onValueChange={setEntity}
+                            options={Object.values(AuditEntity).map((entity) => ({
+                                id: entity,
+                                label: entity,
+                            }))}
+                            allLabel="All Entities"
+                        />
+                    </FilterToolbar>
+
+                    <AuditTable audits={audits} />
+                </>
+            )}
         </div>
     );
 }

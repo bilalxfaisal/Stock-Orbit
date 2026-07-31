@@ -6,7 +6,10 @@ import { useContainers } from "@/hooks/useContainers";
 import { useProductTypes } from "@/hooks/useProductTypes";
 import { useCategories } from "@/hooks/useCategories";
 import FilterSelect from "@/components/FilterSelect";
-import { Input } from "@/components/ui/input";
+import PageHeader from "@/components/PageHeader";
+import FilterToolbar from "@/components/FilterToolbar";
+import SearchInput from "@/components/SearchInput";
+import { PageLoadingState, ErrorState } from "@/components/PageStates";
 
 export default function InventoryPage() {
     const [brand, setBrand] = useState("");
@@ -56,82 +59,76 @@ export default function InventoryPage() {
     );
 
     if (isLoading) {
-        return <h1>Loading...</h1>;
-    }
-
-    if (error) {
-        return <h1>Failed to load Inventory.</h1>;
+        return <PageLoadingState />;
     }
 
     return (
         <div className="space-y-6">
 
-            <div>
-                <h1 className="text-3xl font-bold">Inventory</h1>
-                <p className="text-muted-foreground">
-                    View and Find products in Inventory
-                </p>
-            </div>
+            <PageHeader
+                title="Inventory"
+                description="View and find products in inventory."
+            />
 
-            <div className="flex gap-4">
-                <Input
-                    placeholder="Search brand..."
-                    value={brand}
-                    onChange={(e) =>
-                        setBrand(e.target.value)
-                    }
-                />
+            {error ? (
+                <ErrorState description="We couldn't load inventory. Try adjusting your filters or refreshing the page." />
+            ) : (
+                <>
+                    <FilterToolbar>
+                        <SearchInput
+                            placeholder="Search brand..."
+                            value={brand}
+                            onChange={(e) =>
+                                setBrand(e.target.value)
+                            }
+                            containerClassName="flex-1 min-w-[160px]"
+                        />
 
-                {/* Model */}
+                        <SearchInput
+                            placeholder="Search model..."
+                            value={model}
+                            onChange={(e) =>
+                                setModel(e.target.value)
+                            }
+                            containerClassName="flex-1 min-w-[160px]"
+                        />
 
-                <Input
-                    placeholder="Search model..."
-                    value={model}
-                    onChange={(e) =>
-                        setModel(e.target.value)
-                    }
-                />
+                        <FilterSelect
+                            value={categoryId}
+                            onValueChange={setCategoryId}
+                            options={categories.map((category) => ({
+                                id: category.id,
+                                label: category.name,
+                            }))}
+                            allLabel="All categories"
+                        />
 
-                {/* Category */}
+                        <FilterSelect
+                            value={productTypeId}
+                            onValueChange={setProductTypeId}
+                            options={productTypes.map((productType) => ({
+                                id: productType.id,
+                                label: productType.name,
+                            }))}
+                            allLabel="All product types"
+                            disabled={!categoryId}
+                        />
 
-                <FilterSelect
-                    value={categoryId}
-                    onValueChange={setCategoryId}
-                    options={categories.map((category) => ({
-                        id: category.id,
-                        label: category.name,
-                    }))}
-                    allLabel="All categories"
-                />
+                        <FilterSelect
+                            value={containerId}
+                            onValueChange={setContainerId}
+                            options={containers.map((container) => ({
+                                id: container.id,
+                                label: container.code,
+                            }))}
+                            allLabel="All Containers"
+                            disabled={!categoryId}
+                        />
+                    </FilterToolbar>
 
-                {/* Product type */}
-
-                <FilterSelect
-                    value={productTypeId}
-                    onValueChange={setProductTypeId}
-                    options={productTypes.map((productType) => ({
-                        id: productType.id,
-                        label: productType.name,
-                    }))}
-                    allLabel="All product types"
-                    disabled={!categoryId}
-                />
-
-                {/* Container */}
-
-                <FilterSelect
-                    value={containerId}
-                    onValueChange={setContainerId}
-                    options={containers.map((container) => ({
-                        id: container.id,
-                        label: container.code,
-                    }))}
-                    allLabel="All Containers"
-                    disabled={!categoryId}
-                />
-            </div>
-
-            <InventoryTable inventory={inventory} />
+                    <InventoryTable inventory={inventory} />
+                </>
+            )}
 
         </div>
     );

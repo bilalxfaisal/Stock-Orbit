@@ -90,21 +90,23 @@ export default function CreateUserDialog() {
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         className="phone-number"
                     />
-                    <Label>Role</Label>
+                    <div className="space-y-1.5">
+                        <Label>Role</Label>
 
-                    <FilterSelect<UserRole>
-                        value={role}
-                        onValueChange={(value) => {
-                            if (value !== undefined) {
-                                setRole(value);
-                            }
-                        }}
-                        options={Object.values(UserRole).map((role) => ({
-                            id: role,
-                            label: role,
-                        }))}
-                        allLabel="All Roles"
-                    />
+                        <FilterSelect<UserRole>
+                            value={role}
+                            onValueChange={(value) => {
+                                if (value !== undefined) {
+                                    setRole(value);
+                                }
+                            }}
+                            options={Object.values(UserRole).map((role) => ({
+                                id: role,
+                                label: role,
+                            }))}
+                            allLabel="All Roles"
+                        />
+                    </div>
 
                     <Button className="w-full" disabled={createUser.isPending} type="submit">
                         {createUser.isPending ? "Creating..." : "Create"}

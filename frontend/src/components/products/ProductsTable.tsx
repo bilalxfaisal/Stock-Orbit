@@ -1,4 +1,8 @@
+import { PackageSearch } from "lucide-react";
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import DataTableCard from "@/components/DataTableCard";
+import { EmptyState } from "@/components/PageStates";
 import type { Product } from "@/types/products.types";
 import StockOutProductDialog from "./StockOutDialog";
 
@@ -9,47 +13,48 @@ export default function ProductsTable({ products }: Props) {
 
   if (!products.length) {
     return (
-      <p className="text-muted-foreground">
-        No products found.
-      </p>
+      <EmptyState
+        icon={PackageSearch}
+        title="No products found"
+        description="Try adjusting your filters, or stock in a new product to get started."
+      />
     );
   }
 
   return (
-    <>
-      <Table border={1} cellPadding={8}>
+    <DataTableCard>
+      <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Brand</TableHead>
             <TableHead>Model</TableHead>
-            {/* <TableHead>Quantity</TableHead> */}
-            <TableHead>Price</TableHead>
+            <TableHead className="text-right">Price</TableHead>
             <TableHead>Product Type</TableHead>
             <TableHead>Category</TableHead>
-            {/* <TableHead>Container</TableHead> */}
-            <TableHead>Actions</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
           {products.map((product: Product) => (
             <TableRow key={product.id}>
-              <TableCell>{product.brand}</TableCell>
-              <TableCell>{product.model}</TableCell>
-              {/* <TableCell>{product.quantity}</TableCell> */}
-              <TableCell>{product.price}</TableCell>
-              <TableCell>{product.productType}</TableCell>
-              <TableCell>{product.category}</TableCell>
-              {/* <TableCell>{product.container}</TableCell> */}
+              <TableCell className="font-medium text-foreground">{product.brand}</TableCell>
+              <TableCell className="text-muted-foreground">{product.model}</TableCell>
+              <TableCell className="text-right font-mono tabular-nums">
+                {new Intl.NumberFormat().format(product.price)}
+              </TableCell>
+              <TableCell className="text-muted-foreground">{product.productType}</TableCell>
+              <TableCell className="text-muted-foreground">{product.category}</TableCell>
 
-              <TableCell>
-                <StockOutProductDialog product={product} />
+              <TableCell className="text-right">
+                <div className="flex justify-end">
+                  <StockOutProductDialog product={product} />
+                </div>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-    </>
+    </DataTableCard>
   );
 }
-

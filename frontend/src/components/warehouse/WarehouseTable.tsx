@@ -1,3 +1,5 @@
+import { Warehouse as WarehouseIcon } from "lucide-react";
+
 import {
     Table,
     TableBody,
@@ -6,6 +8,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import DataTableCard from "@/components/DataTableCard";
+import { EmptyState } from "@/components/PageStates";
 
 import type { Warehouse } from "@/types/warehouse.types";
 
@@ -22,67 +26,71 @@ export default function WarehouseTable({
 
     if (!warehouses.length) {
         return (
-            <p className="text-muted-foreground">
-                No warehouses found.
-            </p>
+            <EmptyState
+                icon={WarehouseIcon}
+                title="No warehouses found"
+                description="Try adjusting your search, or create a new warehouse."
+            />
         );
     }
 
     return (
-        <Table>
+        <DataTableCard>
+            <Table>
 
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Code</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Containers</TableHead>
-                    <TableHead className="text-right">
-                        Actions
-                    </TableHead>
-                </TableRow>
-            </TableHeader>
-
-            <TableBody>
-
-                {warehouses.map((warehouse) => (
-
-                    <TableRow key={warehouse.id}>
-
-                        <TableCell>
-                            {warehouse.code}
-                        </TableCell>
-
-                        <TableCell>
-                            {warehouse.name}
-                        </TableCell>
-
-                        <TableCell>
-                            {warehouse.location}
-                        </TableCell>
-
-                        <TableCell>
-                            {warehouse.containerQty}
-                        </TableCell>
-
-                        <TableCell className="flex justify-end gap-2">
-
-                            <UpdateWarehouseDialog
-                                warehouse={warehouse}
-                            />
-
-                            <DeleteWarehouseDialog
-                                id={warehouse.id}
-                            />
-
-                        </TableCell>
-
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Code</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Location</TableHead>
+                        <TableHead className="text-right">Containers</TableHead>
+                        <TableHead className="text-right">
+                            Actions
+                        </TableHead>
                     </TableRow>
+                </TableHeader>
 
-                ))}
+                <TableBody>
 
-            </TableBody>
+                    {warehouses.map((warehouse) => (
 
-        </Table>
+                        <TableRow key={warehouse.id}>
+
+                            <TableCell className="font-medium text-foreground">
+                                {warehouse.code}
+                            </TableCell>
+
+                            <TableCell className="text-muted-foreground">
+                                {warehouse.name}
+                            </TableCell>
+
+                            <TableCell className="text-muted-foreground">
+                                {warehouse.location}
+                            </TableCell>
+
+                            <TableCell className="text-right font-mono tabular-nums text-muted-foreground">
+                                {warehouse.containerQty}
+                            </TableCell>
+
+                            <TableCell className="text-right">
+                                <div className="flex justify-end gap-2">
+                                    <UpdateWarehouseDialog
+                                        warehouse={warehouse}
+                                    />
+
+                                    <DeleteWarehouseDialog
+                                        id={warehouse.id}
+                                    />
+                                </div>
+                            </TableCell>
+
+                        </TableRow>
+
+                    ))}
+
+                </TableBody>
+
+            </Table>
+        </DataTableCard>
     );
 }

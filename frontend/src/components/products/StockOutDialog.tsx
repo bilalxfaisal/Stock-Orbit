@@ -23,10 +23,6 @@ export default function StockOutProductDialog({ product }: { product: Product })
 
     const {can} = usePermission();
 
-    console.log("Product received:", product);
-
-    console.log("Reached Stock Out Dialog");
-
     const stockOutProduct = useStockOutProduct();
 
     const {
@@ -41,8 +37,6 @@ export default function StockOutProductDialog({ product }: { product: Product })
         id: item.containerId,
         label: `${item.container} — ${item.quantity} available`,
     }));
-
-    console.log(containerOptions);
 
     const [open, setOpen] = useState(false);
 
@@ -112,8 +106,8 @@ export default function StockOutProductDialog({ product }: { product: Product })
                         }
                     />
 
-                    <div>
-                        <Label>Reason</Label>< br />
+                    <div className="space-y-1.5">
+                        <Label>Reason</Label>
 
                         <FilterSelect
                             value={reason}
@@ -133,8 +127,8 @@ export default function StockOutProductDialog({ product }: { product: Product })
                         />
                     </div>
 
-                    <div>
-                        <Label>Container</Label><br />
+                    <div className="space-y-1.5">
+                        <Label>Container</Label>
 
                         <FilterSelect
                             value={

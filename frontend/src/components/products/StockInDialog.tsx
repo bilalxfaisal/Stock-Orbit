@@ -238,70 +238,74 @@ export default function CreateProductDialog() {
 
                     {/* Product type */}
 
-                    <Label>Product Type</Label>
-                    <FilterSelect
-                        value={
-                            productTypeId === 0
-                                ? undefined
-                                : productTypeId
-                        }
-                        onValueChange={(value) => {
+                    <div className="space-y-1.5">
+                        <Label>Product Type</Label>
+                        <FilterSelect
+                            value={
+                                productTypeId === 0
+                                    ? undefined
+                                    : productTypeId
+                            }
+                            onValueChange={(value) => {
 
-                            setProductTypeId(
-                                value ?? 0,
-                            );
+                                setProductTypeId(
+                                    value ?? 0,
+                                );
 
-                            // The selected container may
-                            // belong to the old category
+                                // The selected container may
+                                // belong to the old category
 
-                            setContainerId(0);
-                        }}
-                        options={
-                            productTypeOptions
-                        }
-                        allLabel={
-                            isProductTypeLoading
-                                ? "Loading product types..."
-                                : "Select product type"
-                        }
-                        disabled={
-                            isProductTypeLoading ||
-                            productTypes.length === 0
-                        }
-                    />
+                                setContainerId(0);
+                            }}
+                            options={
+                                productTypeOptions
+                            }
+                            allLabel={
+                                isProductTypeLoading
+                                    ? "Loading product types..."
+                                    : "Select product type"
+                            }
+                            disabled={
+                                isProductTypeLoading ||
+                                productTypes.length === 0
+                            }
+                        />
+                    </div>
 
                     {/* Container */}
 
-                    <Label>Container</Label>
-                    <FilterSelect
-                        value={
-                            containerId === 0
-                                ? undefined
-                                : containerId
-                        }
-                        onValueChange={(value) =>
-                            setContainerId(
-                                value ?? 0,
-                            )
-                        }
-                        options={
-                            containerOptions
-                        }
-                        allLabel={
-                            productTypeId === 0
-                                ? "Select product type first"
-                                : isContainerLoading
-                                    ? "Loading containers..."
-                                    : containers.length === 0
-                                        ? "No containers available"
-                                        : "Select container"
-                        }
-                        disabled={
-                            productTypeId === 0 ||
-                            isContainerLoading ||
-                            containers.length === 0
-                        }
-                    />
+                    <div className="space-y-1.5">
+                        <Label>Container</Label>
+                        <FilterSelect
+                            value={
+                                containerId === 0
+                                    ? undefined
+                                    : containerId
+                            }
+                            onValueChange={(value) =>
+                                setContainerId(
+                                    value ?? 0,
+                                )
+                            }
+                            options={
+                                containerOptions
+                            }
+                            allLabel={
+                                productTypeId === 0
+                                    ? "Select product type first"
+                                    : isContainerLoading
+                                        ? "Loading containers..."
+                                        : containers.length === 0
+                                            ? "No containers available"
+                                            : "Select container"
+                            }
+                            disabled={
+                                productTypeId === 0 ||
+                                isContainerLoading ||
+                                containers.length === 0
+                            }
+                        />
+                    </div>
 
                     {/* Submit */}
 

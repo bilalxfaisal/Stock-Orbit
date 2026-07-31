@@ -1,3 +1,5 @@
+import { Users as UsersIcon } from "lucide-react";
+
 import {
     Table,
     TableBody,
@@ -6,8 +8,11 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import DataTableCard from "@/components/DataTableCard";
+import { EmptyState } from "@/components/PageStates";
+import StatusBadge from "@/components/StatusBadge";
 
-import type {User} from "@/types/user.types"
+import type { User } from "@/types/user.types"
 import DeleteUserDialog from "./DeleteUserDialog";
 
 interface Props {
@@ -16,34 +21,44 @@ interface Props {
 
 export default function UsersTable({ users }: Props) {
     if (!users.length) {
-        return <p className="text-muted-foreground">No users found.</p>;
+        return (
+            <EmptyState
+                icon={UsersIcon}
+                title="No users found"
+                description="Try adjusting your search, or create a new user."
+            />
+        );
     }
 
     return (
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Phone Number</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-            </TableHeader>
-
-            <TableBody>
-                {users.map((users) => (
-                    <TableRow key={users.id}>
-                        <TableCell>{users.name}</TableCell>
-                        <TableCell>{users.email}</TableCell>
-                        <TableCell>{users.phoneNumber}</TableCell>
-                        <TableCell>{users.role}</TableCell>
-                        <TableCell className="flex justify-end gap-2">
-                            <DeleteUserDialog id={users.id} />
-                        </TableCell>
+        <DataTableCard>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Phone Number</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+                </TableHeader>
+
+                <TableBody>
+                    {users.map((user) => (
+                        <TableRow key={user.id}>
+                            <TableCell className="font-medium text-foreground">{user.name}</TableCell>
+                            <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                            <TableCell className="text-muted-foreground">{user.phoneNumber}</TableCell>
+                            <TableCell><StatusBadge value={user.role} /></TableCell>
+                            <TableCell className="text-right">
+                                <div className="flex justify-end gap-2">
+                                    <DeleteUserDialog id={user.id} />
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </DataTableCard>
     );
 }

@@ -1,3 +1,5 @@
+import { Boxes } from "lucide-react";
+
 import {
     Table,
     TableBody,
@@ -6,6 +8,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import DataTableCard from "@/components/DataTableCard";
+import { EmptyState } from "@/components/PageStates";
 import type { Inventory } from "@/types/inventory.types";
 
 interface Props {
@@ -14,36 +18,42 @@ interface Props {
 
 export default function ProductTypeTable({ inventory }: Props) {
     if (!inventory.length) {
-        return <p className="text-muted-foreground">No product types found.</p>;
+        return (
+            <EmptyState
+                icon={Boxes}
+                title="No inventory found"
+                description="Try adjusting your filters — inventory shows stocked products across containers."
+            />
+        );
     }
 
     return (
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Model</TableHead>
-                    <TableHead>Brand</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    {/* <TableHead>Price</TableHead> */}
-                    <TableHead>Container</TableHead>
-                    <TableHead>Product Type</TableHead>
-                    <TableHead>Category</TableHead>
-                </TableRow>
-            </TableHeader>
-
-            <TableBody>
-                {inventory.map((inventory) => (
-                    <TableRow key={inventory.id}>
-                        <TableCell>{inventory.model}</TableCell>
-                        <TableCell>{inventory.brand}</TableCell>
-                        <TableCell>{inventory.quantity}</TableCell>
-                        {/* <TableCell>{inventory.price}</TableCell> */}
-                        <TableCell>{inventory.container}</TableCell>
-                        <TableCell>{inventory.productType}</TableCell>
-                        <TableCell>{inventory.category}</TableCell>
+        <DataTableCard>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Model</TableHead>
+                        <TableHead>Brand</TableHead>
+                        <TableHead className="text-right">Quantity</TableHead>
+                        <TableHead>Container</TableHead>
+                        <TableHead>Product Type</TableHead>
+                        <TableHead>Category</TableHead>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+                </TableHeader>
+
+                <TableBody>
+                    {inventory.map((inventory) => (
+                        <TableRow key={inventory.id}>
+                            <TableCell className="font-medium text-foreground">{inventory.model}</TableCell>
+                            <TableCell className="text-muted-foreground">{inventory.brand}</TableCell>
+                            <TableCell className="text-right font-mono tabular-nums text-muted-foreground">{inventory.quantity}</TableCell>
+                            <TableCell className="text-muted-foreground">{inventory.container}</TableCell>
+                            <TableCell className="text-muted-foreground">{inventory.productType}</TableCell>
+                            <TableCell className="text-muted-foreground">{inventory.category}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </DataTableCard>
     );
 }

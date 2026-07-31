@@ -12,7 +12,7 @@ export function InputField({
   className,
 }: InputFieldProps) {
   return (
-    <>
+    <div className="space-y-1.5">
       <Label>{label}</Label>
 
       <Input
@@ -23,7 +23,6 @@ export function InputField({
         onChange={onChange}
         className={className}
       />
-      <br />
-    </>
+    </div>
   );
 }

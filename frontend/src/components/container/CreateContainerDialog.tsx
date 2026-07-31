@@ -109,29 +109,33 @@ export default function CreateContainerDialog() {
 
                     />
 
-                    <Label>Category</Label>
-                    <FilterSelect
-                        value={categoryId === 0 ? undefined : categoryId}
-                        onValueChange={(value) => { setCategoryId(value ?? 0) }}
-                        options={categoryOptions}
-                        allLabel={
-                            isCategoryLoading ?
-                                "Loading Category ..." :
-                                "Select category"
-                        }
-                    />
+                    <div className="space-y-1.5">
+                        <Label>Category</Label>
+                        <FilterSelect
+                            value={categoryId === 0 ? undefined : categoryId}
+                            onValueChange={(value) => { setCategoryId(value ?? 0) }}
+                            options={categoryOptions}
+                            allLabel={
+                                isCategoryLoading ?
+                                    "Loading Category ..." :
+                                    "Select category"
+                            }
+                        />
+                    </div>
 
-                    <Label>Warehouse</Label>
-                    <FilterSelect
-                        value={warehouseId === 0 ? undefined : warehouseId}
-                        onValueChange={(value) => { setWarehouseId(value ?? 0) }}
-                        options={warehouseOptions}
-                        allLabel={
-                            isWarehouseLoading ?
-                                "Loading Warehouses ..." :
-                                "Select warehouse"
-                        }
-                    />
+                    <div className="space-y-1.5">
+                        <Label>Warehouse</Label>
+                        <FilterSelect
+                            value={warehouseId === 0 ? undefined : warehouseId}
+                            onValueChange={(value) => { setWarehouseId(value ?? 0) }}
+                            options={warehouseOptions}
+                            allLabel={
+                                isWarehouseLoading ?
+                                    "Loading Warehouses ..." :
+                                    "Select warehouse"
+                            }
+                        />
+                    </div>
 
                     < Button
                         className="w-full"

@@ -69,17 +69,19 @@ export default function CreateProductTypeDialog() {
                         onChange={(e) => setName(e.target.value)}
                     />
 
-                    <Label>Category</Label>
-                    <FilterSelect 
-                    value={categoryId === 0 ? undefined : categoryId}
-                    onValueChange={(value)=> {setCategoryId(value ?? 0)}}
-                    options={categoryOptions}
-                    allLabel={
-                        isCategoryLoading ? 
-                        "Loading Categories ..." :
-                        "Select category"
-                    }
-                    />
+                    <div className="space-y-1.5">
+                        <Label>Category</Label>
+                        <FilterSelect
+                            value={categoryId === 0 ? undefined : categoryId}
+                            onValueChange={(value) => { setCategoryId(value ?? 0) }}
+                            options={categoryOptions}
+                            allLabel={
+                                isCategoryLoading ?
+                                    "Loading Categories ..." :
+                                    "Select category"
+                            }
+                        />
+                    </div>
 
                     <Button className="w-full" disabled={createProductType.isPending} type="submit">
                         {createProductType.isPending ? "Creating..." : "Create"}

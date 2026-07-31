@@ -3,14 +3,16 @@ import Sidebar from "../Sidebar";
 
 export default function DashboardLayout() {
     return (
-        <div className="flex h-screen">
+        <div className="flex h-screen bg-background">
 
-            <aside className="w-64 border-r bg-background shrink-0">
+            <aside className="w-64 shrink-0">
                 <Sidebar />
             </aside>
 
-            <main className="flex-1 overflow-y-auto p-6">
-                <Outlet />
+            <main className="flex-1 overflow-y-auto">
+                <div className="mx-auto max-w-7xl p-6 lg:p-8">
+                    <Outlet />
+                </div>
             </main>
 
         </div>
