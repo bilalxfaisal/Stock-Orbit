@@ -87,24 +87,63 @@ The frontend mirrors this structure 1:1: a typed `api/` client per domain, a `ho
 
 ## ⚡ Quick Start
 
-**Backend**
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/bilalxfaisal/Stock-Sphere.git
-cd Stock-Sphere/backend
-npm install
-# configure your PostgreSQL connection and JWT_SECRET in .env
-npx drizzle-kit push
-npm run start:dev
+cd Stock-Sphere
 ```
 
-**Frontend**
+### 2. Install dependencies
+
+Install dependencies for the root project, backend, and frontend:
 
 ```bash
-cd Stock-Sphere/frontend
 npm install
+
+cd backend
+npm install
+
+cd ../frontend
+npm install
+
+cd ..
+```
+
+### 3. Configure environment variables
+
+Create a `.env` file inside the `backend` folder:
+
+```text
+backend/.env
+```
+
+Configure your PostgreSQL database connection and JWT secret in the `.env` file.
+
+### 4. Setup the database
+
+From the project root, run:
+
+```bash
+cd backend
+npx drizzle-kit push
+cd ..
+```
+
+### 5. Start the application
+
+From the project root:
+
+```bash
 npm run dev
 ```
+
+This starts both the **NestJS backend** and **React/Vite frontend** simultaneously.
+
+### Default URLs
+
+- **Frontend:** http://localhost:6063
+- **Backend:** http://localhost:6006
 
 ---
 
@@ -136,7 +175,6 @@ npm run dev
 - **[React Hook Form](https://react-hook-form.com/)** + **[Zod](https://zod.dev/)** — Forms and validation
 - **[Tailwind CSS 4](https://tailwindcss.com/)** + **shadcn/ui** — Styling and components
 - **[Axios](https://axios-http.com/)** — API client
-
 
 ---
 
