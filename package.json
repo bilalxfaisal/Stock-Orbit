@@ -1,0 +1,25 @@
+{
+  "name": "stockmanagementsystem",
+  "version": "1.0.0",
+  "description": "<div align=\"center\">",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm --prefix backend run start:dev",
+    "dev:frontend": "npm --prefix frontend run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bilalxfaisal/Stock-Sphere.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bilalxfaisal/Stock-Sphere/issues"
+  },
+  "homepage": "https://github.com/bilalxfaisal/Stock-Sphere#readme",
+  "devDependencies": {
+    "concurrently": "^10.0.4"
+  }
+}
