@@ -144,7 +144,6 @@ This starts both the **NestJS backend** and **React/Vite frontend** simultaneous
 
 - **Frontend:** http://localhost:6063
 - **Backend:** http://localhost:6006
-- **Full Application:** http://localhost:6064
 ---
 
 ## 🔐 Roles & Permissions
