@@ -12,7 +12,7 @@ export default function FilterToolbar({
     return (
         <div
             className={cn(
-                "flex flex-col gap-3 rounded-xl border border-border bg-card p-3 sm:flex-row sm:flex-wrap sm:items-center",
+                "flex flex-col gap-3 rounded-xl border border-border bg-card p-3.5 shadow-xs sm:flex-row sm:flex-wrap sm:items-center",
                 className,
             )}
         >

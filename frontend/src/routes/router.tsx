@@ -13,6 +13,7 @@ import WarehousesPage from "@/pages/WarehousesPage";
 import UsersPage from "@/pages/UsersPage";
 import AuditPage from "@/pages/AuditPage";
 import LoginPage from "@/pages/LoginPage";
+import NotFoundPage from "@/pages/NotFoundPage";
 
 export const router = createBrowserRouter([
     {
@@ -56,6 +57,10 @@ export const router = createBrowserRouter([
                     {
                         path: "/audit",
                         element: <AuditPage />,
+                    },
+                    {
+                        path: "*",
+                        element: <NotFoundPage />,
                     },
                 ],
             },

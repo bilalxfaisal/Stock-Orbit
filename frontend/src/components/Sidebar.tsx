@@ -95,12 +95,13 @@ export default function Sidebar() {
             <div className="flex items-center gap-2.5 border-b border-sidebar-border px-5 py-5">
                 {/* <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 </div> */}
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg">
-                        <img
-                            src={stockSphereOrangeLogo}
-                            className="h-full w-full"
-                        />
-                    </div>
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg ring-1 ring-sidebar-border">
+                    <img
+                        src={stockSphereBlueLogo}
+                        className="h-full w-full object-cover"
+                        alt=""
+                    />
+                </div>
 
                 <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-white">
