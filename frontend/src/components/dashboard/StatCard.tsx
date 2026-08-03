@@ -48,7 +48,7 @@ export default function StatCard({
     const styles = ACCENT_STYLES[accent];
 
     return (
-        <Card className="transition-shadow hover:shadow-sm">
+        <Card>
             <CardContent className="space-y-3">
                 <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 space-y-1">

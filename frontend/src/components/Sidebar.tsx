@@ -24,6 +24,7 @@ import type { Permission } from "@/types/permission.types";
 import { cn } from "@/lib/utils";
 import stockSphereBlueLogo from "@/components/assets/stock-sphere-logo-blue.svg"
 import stockSphereOrangeLogo from "@/components/assets/stock-sphere-logo.png"
+import ThemeToggle from "./ThemeToggle";
 
 const links = [
     {
@@ -92,7 +93,7 @@ export default function Sidebar() {
 
             {/* Logo / application title */}
 
-            <div className="flex items-center gap-2.5 border-b border-sidebar-border px-5 py-5">
+            <div className="flex items-center gap-2.5 border-b border-sidebar-border px-4 py-4">
                 {/* <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 </div> */}
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg ring-1 ring-sidebar-border">
@@ -115,7 +116,7 @@ export default function Sidebar() {
 
             {/* Navigation */}
 
-            <nav className="sidebar-scrollbar flex-1 space-y-0.5 overflow-y-auto p-3">
+            <nav className="flex-1 space-y-0.5 overflow-y-auto p-3">
 
                 {links.map((link) => {
 
@@ -180,7 +181,15 @@ export default function Sidebar() {
 
             {/* User / logout section */}
 
-            <div className="space-y-3 p-3">
+            <div className="space-y-2 p-2">
+
+                <div className="flex items-center justify-between rounded-lg border border-sidebar-border bg-sidebar-accent/40 px-3 py-2">
+                    <span className="text-sm text-sidebar-foreground">
+                        Theme
+                    </span>
+
+                    <ThemeToggle />
+                </div>
 
                 {user && (
                     <div className="flex items-center gap-2.5 rounded-lg px-2 py-1.5">
@@ -192,6 +201,7 @@ export default function Sidebar() {
                             <p className="truncate text-xs font-medium text-white">
                                 {user.email}
                             </p>
+
                             <p className="truncate text-[11px] text-sidebar-foreground/60">
                                 {user.role}
                             </p>
@@ -206,6 +216,7 @@ export default function Sidebar() {
                     <LogOut className="h-4.5 w-4.5" />
                     Logout
                 </button>
+
             </div>
 
         </aside>

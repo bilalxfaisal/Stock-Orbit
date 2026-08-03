@@ -12,7 +12,7 @@ import HeroBanner from "@/components/dashboard/HeroBanner";
 import StockActivityChart from "@/components/dashboard/StockActivityChart";
 import CategoryDistributionChart from "@/components/dashboard/CategoryDistributionChart";
 import WarehouseUtilization from "@/components/dashboard/WarehouseUtilization";
-import ActivityFeed from "@/components/dashboard/ActivityFeed";
+//import ActivityFeed from "@/components/dashboard/ActivityFeed";
 import RoleBreakdown from "@/components/dashboard/RoleBreakdown";
 import StatCard from "@/components/dashboard/StatCard";
 

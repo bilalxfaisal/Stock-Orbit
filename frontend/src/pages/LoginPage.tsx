@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/providers/AuthProvider";
 import FilterToolbar from "@/components/FilterToolbar";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -36,7 +37,12 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="flex min-h-screen">
+        <div className="relative flex min-h-screen">
+
+            {/* Theme Toggle */}
+            <div className="absolute top-6 right-6 z-50">
+                <ThemeToggle />
+            </div>
 
             {/* Brand panel — hidden on small screens */}
 
@@ -111,7 +117,7 @@ export default function LoginPage() {
                 </div>
 
                 <p className="relative text-xs text-sidebar-foreground/40">
-                    &copy; {new Date().getFullYear()} Stock Manager
+                    &copy; {new Date().getFullYear()} Stock Sphere. All rights reserved.
                 </p>
             </div>
 

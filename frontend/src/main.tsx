@@ -7,14 +7,17 @@ import { router } from "@/routes/router";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/providers/AuthProvider";
 import QueryProvider from "./providers/QueryProvider";
+import { ThemeProvider } from "./providers/ThemeProvider";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryProvider>
-      <AuthProvider>
-        <RouterProvider router={router} />
-        <Toaster richColors position="top-right" />
-      </AuthProvider>
-    </QueryProvider>
-  </StrictMode>
+    <ThemeProvider>
+      <QueryProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+          <Toaster richColors position="top-right" />
+        </AuthProvider>
+      </QueryProvider>
+    </ThemeProvider >
+  </StrictMode >
 );
