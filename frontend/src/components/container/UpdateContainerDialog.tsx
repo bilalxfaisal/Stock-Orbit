@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 
 import {
     Dialog,
@@ -14,10 +15,19 @@ import { Button } from "@/components/ui/button";
 import { useUpdateContainers } from "@/hooks/useContainers";
 import type { Container } from "@/types/container.types";
 import { InputField } from "../InputField";
+import { flattenZodErrors, getApiErrorMessage } from "@/lib/form-errors";
 
 interface Props {
     container: Container;
 }
+
+const schema = z.object({
+    code: z.string().trim().min(1, "Container code is required."),
+    maximumCapacity: z
+        .number({ error: "Maximum capacity is required." })
+        .int("Maximum capacity must be a whole number.")
+        .positive("Maximum capacity must be greater than 0."),
+});
 
 export default function UpdateContainerDialog({
     container,
@@ -27,28 +37,38 @@ export default function UpdateContainerDialog({
     const [open, setOpen] = useState(false);
     const [code, setCode] = useState("");
     const [maximumCapacity, setMaximumCapacity] = useState(0);
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
     useEffect(() => {
         setCode(container.code);
         setMaximumCapacity(container.maximumCapacity);
     }, [container]);
 
+    function clearError(field: string) {
+        if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+
+        const result = schema.safeParse({ code, maximumCapacity });
+
+        if (!result.success) {
+            setErrors(flattenZodErrors(result.error));
+            return;
+        }
 
         try {
             await updateWarehouse.mutateAsync({
                 id: container.id,
-                data: {
-                    code,
-                    maximumCapacity,
-                },
+                data: result.data,
             });
 
             toast.success("Container updated.");
+            setErrors({});
             setOpen(false);
-        } catch {
-            toast.error("Failed to update container.");
+        } catch (error) {
+            toast.error(getApiErrorMessage(error, "Failed to update container."));
         }
     }
 
@@ -74,15 +94,17 @@ export default function UpdateContainerDialog({
                         type="text"
                         placeholder="Code"
                         value={code}
-                        onChange={(e) => (e.target.value)}
+                        onChange={(e) => { setCode(e.target.value); clearError("code"); }}
+                        error={errors.code}
                     />
 
                     <InputField
                         label="Maximum Capacity"
-                        type="text"
+                        type="number"
                         placeholder="Maximum Capacity"
                         value={maximumCapacity}
-                        onChange={(e) => (Number(e.target.value))}
+                        onChange={(e) => { setMaximumCapacity(Number(e.target.value)); clearError("maximumCapacity"); }}
+                        error={errors.maximumCapacity}
                     />
 
                     <Button

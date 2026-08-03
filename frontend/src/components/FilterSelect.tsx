@@ -25,6 +25,8 @@ interface FilterSelectProps<T extends string | number> {
     disabled?: boolean;
 
     showAllOption?: boolean;
+
+    error?: string;
 }
 
 const ALL_VALUE = "all";
@@ -38,6 +40,7 @@ export default function FilterSelect<
     allLabel,
     disabled = false,
     showAllOption = true,
+    error,
 }: FilterSelectProps<T>) {
 
     const selectedLabel =
@@ -49,60 +52,68 @@ export default function FilterSelect<
             )?.label ?? allLabel;
 
     return (
-        <Select
-            value={
-                value === undefined
-                    ? ALL_VALUE
-                    : String(value)
-            }
-            onValueChange={(selectedValue) => {
-
-                if (
-                    selectedValue === ALL_VALUE ||
-                    selectedValue === "" ||
-                    selectedValue === undefined
-                ) {
-                    onValueChange(undefined);
-                    return;
+        <div className="space-y-1.5">
+            <Select
+                value={
+                    value === undefined
+                        ? ALL_VALUE
+                        : String(value)
                 }
+                onValueChange={(selectedValue) => {
 
-                const selectedOption = options.find(
-                    (option) =>
-                        String(option.id) === selectedValue,
-                );
+                    if (
+                        selectedValue === ALL_VALUE ||
+                        selectedValue === "" ||
+                        selectedValue === undefined
+                    ) {
+                        onValueChange(undefined);
+                        return;
+                    }
 
-                onValueChange(
-                    selectedOption?.id,
-                );
-            }}
-            disabled={disabled}
-        >
-            <SelectTrigger>
-                <SelectValue>
-                    {selectedLabel}
-                </SelectValue>
-            </SelectTrigger>
+                    const selectedOption = options.find(
+                        (option) =>
+                            String(option.id) === selectedValue,
+                    );
 
-            <SelectContent>
+                    onValueChange(
+                        selectedOption?.id,
+                    );
+                }}
+                disabled={disabled}
+            >
+                <SelectTrigger
+                    aria-invalid={!!error}
+                >
+                    <SelectValue>
+                        {selectedLabel}
+                    </SelectValue>
+                </SelectTrigger>
 
-                {showAllOption && (
-                    <SelectItem value={ALL_VALUE}>
-                        {allLabel}
-                    </SelectItem>
-                )}
+                <SelectContent>
 
-                {options.map((option) => (
+                    {showAllOption && (
+                        <SelectItem value={ALL_VALUE}>
+                            {allLabel}
+                        </SelectItem>
+                    )}
 
-                    <SelectItem
-                        key={String(option.id)}
-                        value={String(option.id)}
-                    >
-                        {option.label}
-                    </SelectItem>
+                    {options.map((option) => (
 
-                ))}
+                        <SelectItem
+                            key={String(option.id)}
+                            value={String(option.id)}
+                        >
+                            {option.label}
+                        </SelectItem>
 
-            </SelectContent>
-        </Select>
+                    ))}
+
+                </SelectContent>
+            </Select>
+
+            {error && (
+                <p className="text-xs text-destructive">{error}</p>
+            )}
+        </div>
     );
 }

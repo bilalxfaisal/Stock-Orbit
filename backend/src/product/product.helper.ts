@@ -41,6 +41,50 @@ export class ProductHelper {
         return container;
     }
 
+    // Used when stockConfig.allowManualContainerSelection is true.
+    // The caller must have supplied a containerId.
+    async resolveManualContainer(
+        tx: any,
+        containerId: number | undefined,
+    ) {
+        if (!containerId) {
+            throw new BadRequestException(
+                "containerId is required.",
+            );
+        }
+
+        return this.getContainerOrThrow(tx, containerId);
+    }
+
+    // Used when stockConfig.allowManualContainerSelection is false.
+    // Randomly assigns one of the containers that belong to the
+    // product's category and has enough free capacity for the quantity.
+    async getRandomContainer(
+        tx: any,
+        categoryId: number,
+        quantity: number,
+    ) {
+        const containers = await tx
+            .select()
+            .from(Container)
+            .where(eq(Container.categoryId, categoryId));
+
+        const eligible = containers.filter(
+            (container: typeof Container.$inferSelect) =>
+                container.maximumCapacity - container.currentCapacity >= quantity,
+        );
+
+        if (eligible.length === 0) {
+            throw new BadRequestException(
+                "No container in this category has enough free capacity for this quantity.",
+            );
+        }
+
+        const randomIndex = Math.floor(Math.random() * eligible.length);
+
+        return eligible[randomIndex];
+    }
+
     validateContainer(
         container: typeof Container.$inferSelect,
         productType: typeof ProductType.$inferSelect,

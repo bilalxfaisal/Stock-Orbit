@@ -1,9 +1,9 @@
 import {
     IsInt,
     IsNotEmpty,
+    IsOptional,
     IsPositive,
     IsString,
-    Length,
     Min,
 } from "class-validator";
 
@@ -32,7 +32,9 @@ export class StockInProductDto {
     @IsNotEmpty()
     productTypeId!: number;
 
-    @IsNotEmpty()
+    // Only required when stockConfig.allowManualContainerSelection is true.
+    // When false, this is ignored and a container is chosen automatically.
+    @IsOptional()
     @IsInt()
-    containerId!: number;
+    containerId?: number;
 }

@@ -11,9 +11,10 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { InventoryModule } from './inventory/inventory.module';
+import { ConfigModule } from './config/config.module';
 
 @Module({
-  imports: [WarehouseModule, ContainerModule, CategoryModule, ProductModule, ProductTypeModule, AuditModule, DashboardModule, UserModule, AuthModule, InventoryModule],
+  imports: [WarehouseModule, ContainerModule, CategoryModule, ProductModule, ProductTypeModule, AuditModule, DashboardModule, UserModule, AuthModule, InventoryModule, ConfigModule],
   controllers: [AppController],
   providers: [AppService],
 })

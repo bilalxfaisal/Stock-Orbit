@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 
 import {
     Dialog,
@@ -10,21 +11,27 @@ import {
 } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 import { useUpdateWarehouse } from "@/hooks/useWarehouses";
 import type { Warehouse } from "@/types/warehouse.types";
 import { usePermission } from "@/hooks/usePermission";
+import { InputField } from "../InputField";
+import { flattenZodErrors, getApiErrorMessage } from "@/lib/form-errors";
 
 interface Props {
     warehouse: Warehouse;
 }
 
+const schema = z.object({
+    code: z.string().trim().min(1, "Warehouse code is required."),
+    name: z.string().trim().min(1, "Warehouse name is required."),
+    location: z.string().trim().min(1, "Location is required."),
+});
+
 export default function UpdateWarehouseDialog({
     warehouse,
 }: Props) {
-    const {can} = usePermission();
+    const { can } = usePermission();
     const updateWarehouse = useUpdateWarehouse();
 
     const [open, setOpen] = useState(false);
@@ -32,6 +39,7 @@ export default function UpdateWarehouseDialog({
     const [code, setCode] = useState("");
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
     useEffect(() => {
         setCode(warehouse.code);
@@ -39,30 +47,38 @@ export default function UpdateWarehouseDialog({
         setLocation(warehouse.location);
     }, [warehouse]);
 
+    function clearError(field: string) {
+        if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+
+        const result = schema.safeParse({ code, name, location });
+
+        if (!result.success) {
+            setErrors(flattenZodErrors(result.error));
+            return;
+        }
 
         try {
             await updateWarehouse.mutateAsync({
                 id: warehouse.id,
-                data: {
-                    code,
-                    name,
-                    location,
-                },
+                data: result.data,
             });
 
             toast.success("Warehouse updated.");
+            setErrors({});
             setOpen(false);
-        } catch {
-            toast.error("Failed to update warehouse.");
+        } catch (error) {
+            toast.error(getApiErrorMessage(error, "Failed to update warehouse."));
         }
     }
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger
-                render={<Button disabled={!can("updateWarehouse")}/>}
+                render={<Button disabled={!can("updateWarehouse")} />}
             >
                 Edit
             </DialogTrigger>
@@ -76,32 +92,26 @@ export default function UpdateWarehouseDialog({
                     onSubmit={handleSubmit}
                     className="space-y-4"
                 >
-                    <div className="space-y-1.5">
-                        <Label>Code</Label>
+                    <InputField
+                        label="Code"
+                        value={code}
+                        onChange={(e) => { setCode(e.target.value); clearError("code"); }}
+                        error={errors.code}
+                    />
 
-                        <Input
-                            value={code}
-                            onChange={(e) => setCode(e.target.value)}
-                        />
-                    </div>
+                    <InputField
+                        label="Name"
+                        value={name}
+                        onChange={(e) => { setName(e.target.value); clearError("name"); }}
+                        error={errors.name}
+                    />
 
-                    <div className="space-y-1.5">
-                        <Label>Name</Label>
-
-                        <Input
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="space-y-1.5">
-                        <Label>Location</Label>
-
-                        <Input
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                        />
-                    </div>
+                    <InputField
+                        label="Location"
+                        value={location}
+                        onChange={(e) => { setLocation(e.target.value); clearError("location"); }}
+                        error={errors.location}
+                    />
 
                     <Button
                         className="w-full"

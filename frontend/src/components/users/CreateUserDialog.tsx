@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 
 import {
     Dialog,
@@ -17,6 +18,15 @@ import { UserRole } from "@/types/user.types";
 import { InputField } from "../InputField";
 import FilterSelect from "../FilterSelect";
 import { usePermission } from "@/hooks/usePermission";
+import { flattenZodErrors, getApiErrorMessage } from "@/lib/form-errors";
+
+const schema = z.object({
+    name: z.string().trim().min(1, "Name is required."),
+    email: z.string().trim().min(1, "Email is required.").email("Enter a valid email address."),
+    password: z.string().min(1, "Password is required.").min(8, "Password must be at least 8 characters."),
+    phoneNumber: z.string().trim().min(1, "Phone number is required."),
+    role: z.enum(UserRole, { error: "Please select a role." }),
+});
 
 export default function CreateUserDialog() {
     const { can } = usePermission();
@@ -29,26 +39,43 @@ export default function CreateUserDialog() {
     const [role, setRole] = useState<UserRole>(
         UserRole.AUDITOR
     );
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
+    function clearError(field: string) {
+        if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+
+    function resetForm() {
+        setName("")
+        setEmail("")
+        setPassword("")
+        setPhoneNumber("")
+        setRole(UserRole.AUDITOR)
+        setErrors({});
+    }
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
 
+        const result = schema.safeParse({ name, email, password, phoneNumber, role });
+
+        if (!result.success) {
+            setErrors(flattenZodErrors(result.error));
+            return;
+        }
+
         try {
-            await createUser.mutateAsync({ name, email, password, phoneNumber, role });
+            await createUser.mutateAsync(result.data);
             toast.success("User created.");
-            setName("")
-            setEmail("")
-            setPassword("")
-            setPhoneNumber("")
-            setRole(UserRole.AUDITOR)
+            resetForm();
             setOpen(false)
-        } catch {
-            toast.error("Failed to user.");
+        } catch (error) {
+            toast.error(getApiErrorMessage(error, "Failed to create user."));
         }
     }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={(next) => { setOpen(next); if (!next) resetForm(); }}>
             <DialogTrigger render={<Button disabled={!can("createUser")}
             />}>Create User</DialogTrigger>
 
@@ -63,32 +90,32 @@ export default function CreateUserDialog() {
                         type="text"
                         placeholder="Name"
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="name"
+                        onChange={(e) => { setName(e.target.value); clearError("name"); }}
+                        error={errors.name}
                     />
                     <InputField
                         label="Email"
                         type="text"
                         placeholder="Email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="email"
+                        onChange={(e) => { setEmail(e.target.value); clearError("email"); }}
+                        error={errors.email}
                     />
                     <InputField
                         label="Password"
-                        type="text"
+                        type="password"
                         placeholder="Password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="password"
+                        onChange={(e) => { setPassword(e.target.value); clearError("password"); }}
+                        error={errors.password}
                     />
                     <InputField
                         label="Phone Number"
                         type="text"
                         placeholder="Phone Number"
                         value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        className="phone-number"
+                        onChange={(e) => { setPhoneNumber(e.target.value); clearError("phoneNumber"); }}
+                        error={errors.phoneNumber}
                     />
                     <div className="space-y-1.5">
                         <Label>Role</Label>
@@ -98,13 +125,16 @@ export default function CreateUserDialog() {
                             onValueChange={(value) => {
                                 if (value !== undefined) {
                                     setRole(value);
+                                    clearError("role");
                                 }
                             }}
                             options={Object.values(UserRole).map((role) => ({
                                 id: role,
                                 label: role,
                             }))}
-                            allLabel="All Roles"
+                            allLabel="Select role"
+                            showAllOption={false}
+                            error={errors.role}
                         />
                     </div>
 

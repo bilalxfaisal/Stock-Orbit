@@ -5,6 +5,7 @@ import { Category, Container, Inventory, Product, ProductType } from "src/db/sch
 import { SearchProductDto, StockInProductDto, StockOutProductDto, UpdatePriceDto } from './dto';
 import { AuditService } from 'src/audit/audit.service';
 import { ProductHelper } from './product.helper';
+import { stockConfig } from 'src/config/stock.config';
 
 @Injectable()
 export class ProductService {
@@ -161,7 +162,16 @@ export class ProductService {
 
         return db.transaction(async (tx) => {
             const productType = await this.helper.getProductTypeOrThrow(tx, dto.productTypeId);
-            const container = await this.helper.getContainerOrThrow(tx, dto.containerId);
+
+            // Container selection depends on the stockConfig flag:
+            //  - manual: caller-provided containerId is used as-is.
+            //  - automatic: containerId (if any) is ignored, and a random
+            //    eligible container in the same category is assigned.
+
+            const container = stockConfig.allowManualContainerSelection
+                ? await this.helper.resolveManualContainer(tx, dto.containerId)
+                : await this.helper.getRandomContainer(tx, productType.categoryId, dto.quantity);
+
             this.helper.validateContainer(container, productType);
             this.helper.validateCapacity(container, dto.quantity);
 
@@ -171,10 +181,10 @@ export class ProductService {
                 product = await this.helper.createProduct(tx, dto);
             }
 
-            let inventory = await this.helper.findInventoryByProductAndContainer(tx, product.id, dto.containerId);
+            let inventory = await this.helper.findInventoryByProductAndContainer(tx, product.id, container.id);
 
             if (!inventory) {
-                inventory = await this.helper.createInventory(tx, product.id, dto.containerId, dto.quantity);
+                inventory = await this.helper.createInventory(tx, product.id, container.id, dto.quantity);
             } else {
                 inventory = await this.helper.increaseInventoryQuantity(tx, inventory, dto.quantity);
             }
@@ -187,6 +197,7 @@ export class ProductService {
                 message: "Stock in completed successfully.",
                 product,
                 inventory,
+                container,
             };
         });
     }

@@ -20,7 +20,7 @@ export interface StockInProductDto {
     price: number,
     quantity: number,
     productTypeId: number,
-    containerId: number,
+    containerId?: number,
 }
 
 export interface SearchProductDto{
