@@ -8,16 +8,16 @@ export default function ThemeToggle() {
 
     return (
         <Button
-    variant="outline"
-    size="icon"
-    className="text-foreground hover:text-foreground"
-    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
->
-    {theme === "dark" ? (
-        <Sun className="h-5 w-5" />
-    ) : (
-        <Moon className="h-5 w-5" />
-    )}
-</Button>
+            variant="outline"
+            size="icon"
+            className="text-foreground hover:text-foreground"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        >
+            {theme === "dark" ? (
+                <Sun className="h-5 w-5" />
+            ) : (
+                <Moon className="h-5 w-5" />
+            )}
+        </Button>
     );
 }

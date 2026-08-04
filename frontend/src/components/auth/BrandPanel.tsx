@@ -33,6 +33,7 @@ export default function BrandPanel() {
 
             <BrandBackdrop />
 
+            <div className="flex h-full flex-col justify-center">
             <div className="relative z-10 space-y-8">
 
                 <div className="flex items-center gap-3">
@@ -74,7 +75,7 @@ export default function BrandPanel() {
                         </div>
                     ))}
                 </div>
-            </div>
+            </div></div>
 
             <p className="relative z-10 text-xs text-sidebar-foreground/40">
                 &copy; {new Date().getFullYear()} Stock Sphere. All rights reserved.
