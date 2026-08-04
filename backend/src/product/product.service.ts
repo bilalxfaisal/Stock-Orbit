@@ -6,6 +6,7 @@ import { SearchProductDto, StockInProductDto, StockOutProductDto, UpdatePriceDto
 import { AuditService } from 'src/audit/audit.service';
 import { ProductHelper } from './product.helper';
 import { stockConfig } from 'src/config/stock.config';
+import { AuditAction, AuditEntity, UserRole } from 'src/db/enums';
 
 @Injectable()
 export class ProductService {
@@ -132,7 +133,7 @@ export class ProductService {
         return product;
     }
 
-    async updateProductPrice(id: number, price: number) {
+    async updateProductPrice(id: number, price: number, role?: UserRole) {
 
         const [product] = await db
             .select()
@@ -155,10 +156,18 @@ export class ProductService {
             .where(eq(Product.id, id))
             .returning();
 
+        await this.auditService.log({
+            action: AuditAction.UPDATE,
+            entity: AuditEntity.PRODUCT,
+            entityId: updatedProduct.id,
+            role,
+            description: `Updated price for product '${updatedProduct.brand} ${updatedProduct.model}' to ${updatedProduct.price}.`,
+        });
+
         return updatedProduct;
     }
 
-    async stockIn(dto: StockInProductDto) {
+    async stockIn(dto: StockInProductDto, role?: UserRole) {
 
         return db.transaction(async (tx) => {
             const productType = await this.helper.getProductTypeOrThrow(tx, dto.productTypeId);
@@ -191,7 +200,7 @@ export class ProductService {
 
             await this.helper.updateContainerCapacity(tx, container.id, dto.quantity);
             await this.helper.updateCategoryAndTypeCount(tx, productType.id, dto.quantity)
-            await this.helper.logStockIn(product, dto.quantity);
+            await this.helper.logStockIn(product, dto.quantity, role);
 
             return {
                 message: "Stock in completed successfully.",
@@ -202,7 +211,7 @@ export class ProductService {
         });
     }
 
-    async stockOut(stockOutDto: StockOutProductDto) {
+    async stockOut(stockOutDto: StockOutProductDto, role?: UserRole) {
 
         return await db.transaction(async (tx) => {
             const inventory = await this.helper.getInventoryOrThrow(tx, stockOutDto.productId, stockOutDto.containerId);
@@ -216,7 +225,7 @@ export class ProductService {
 
             await this.helper.updateContainerCapacity(tx, container.id, -stockOutDto.quantity);
             await this.helper.updateCategoryAndTypeCount(tx, productType.id, -stockOutDto.quantity)
-            await this.helper.logStockOut(product, stockOutDto.quantity, stockOutDto.reason);
+            await this.helper.logStockOut(product, stockOutDto.quantity, stockOutDto.reason, role);
 
             return {
                 message: "Stock out completed successfully.",

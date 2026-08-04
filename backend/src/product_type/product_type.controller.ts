@@ -8,6 +8,7 @@ import {
     Patch,
     Post,
     Query,
+    Request,
     UseGuards,
 } from '@nestjs/common';
 
@@ -59,9 +60,11 @@ export class ProductTypeController {
     @Post()
     create(
         @Body() createProductTypeDto: CreateProductTypeDto,
+        @Request() req,
     ) {
         return this.productTypeService.createProductType(
             createProductTypeDto,
+            req.user.role,
         );
     }
 
@@ -82,7 +85,8 @@ export class ProductTypeController {
     @Delete(':id')
     delete(
         @Param('id', ParseIntPipe) id: number,
+        @Request() req,
     ) {
-        return this.productTypeService.deleteProductType(id);
+        return this.productTypeService.deleteProductType(id, req.user.role);
     }
 }

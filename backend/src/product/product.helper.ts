@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { ProductType, Container, Product, Inventory, Category } from "src/db/schema";
 import { and, eq, sql } from "drizzle-orm";
 import { StockInProductDto } from "./dto";
-import { AuditAction, AuditEntity, StockOutReason } from "src/db/enums";
+import { AuditAction, AuditEntity, StockOutReason, UserRole } from "src/db/enums";
 import { AuditService } from "src/audit/audit.service";
 
 @Injectable()
@@ -213,12 +213,14 @@ export class ProductHelper {
     async logStockIn(
         product: typeof Product.$inferSelect,
         quantity: number,
+        role?: UserRole,
     ) {
         await this.auditService.log({
             action: AuditAction.STOCK_IN,
             entity: AuditEntity.PRODUCT,
             entityId: product.id,
             quantity,
+            role,
             description: `Stocked in ${quantity} x product '${product.brand} ${product.model}'.`,
         });
     }
@@ -296,6 +298,7 @@ export class ProductHelper {
         product: typeof Product.$inferSelect,
         quantity: number,
         reason: StockOutReason,
+        role?: UserRole,
     ) {
         await this.auditService.log({
             action: AuditAction.STOCK_OUT,
@@ -303,6 +306,7 @@ export class ProductHelper {
             entityId: product.id,
             quantity,
             reason,
+            role,
             description: `Stocked out ${quantity} x product '${product.brand} ${product.model}'.`,
         });
     }

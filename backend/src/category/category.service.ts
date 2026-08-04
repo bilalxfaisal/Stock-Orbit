@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 import { db } from 'src/db/db';
 import { AuditService } from 'src/audit/audit.service';
 import { Container, Category, ProductType } from "src/db/schema"
-import { AuditAction, AuditEntity } from 'src/db/enums';
+import { AuditAction, AuditEntity, UserRole } from 'src/db/enums';
 import { UpdateCategoryDto, CreateCategoryDto } from './dto';
 import { log } from 'console';
 
@@ -12,7 +12,7 @@ export class CategoryService {
 
     constructor(private readonly auditService: AuditService) { }
 
-    async createCategory(createCategoryDto: CreateCategoryDto) {
+    async createCategory(createCategoryDto: CreateCategoryDto, role?: UserRole) {
 
         const [existingCategory] = await db
             .select()
@@ -32,6 +32,7 @@ export class CategoryService {
             action: AuditAction.CREATE,
             entity: AuditEntity.CATEGORY,
             entityId: newCategory.id,
+            role,
             description: `Created category '${newCategory.name}'.`,
         });
 
@@ -56,7 +57,7 @@ export class CategoryService {
         return category;
     }
 
-    async deleteCategory(id: number) {
+    async deleteCategory(id: number, role?: UserRole) {
 
         const [existingCategory] = await db
             .select()
@@ -98,6 +99,7 @@ export class CategoryService {
             action: AuditAction.DELETE,
             entity: AuditEntity.CATEGORY,
             entityId: deletedCategory.id,
+            role,
             description: `Deleted category '${deletedCategory.name}'.`,
         });
 

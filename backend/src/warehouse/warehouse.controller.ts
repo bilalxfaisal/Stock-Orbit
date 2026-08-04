@@ -8,6 +8,7 @@ import {
     Patch,
     Post,
     Query,
+    Request,
     UseGuards,
 } from '@nestjs/common';
 import { WarehouseService } from './warehouse.service';
@@ -58,8 +59,9 @@ export class WarehouseController {
     @Post()
     createWarehouse(
         @Body() createWarehouseDto: CreateWarehouseDto,
+        @Request() req,
     ) {
-        return this.warehouseService.createWarehouse(createWarehouseDto);
+        return this.warehouseService.createWarehouse(createWarehouseDto, req.user.role);
     }
 
     @Roles(
@@ -69,8 +71,9 @@ export class WarehouseController {
     updateWarehouse(
         @Param('id', ParseIntPipe) id: number,
         @Body() updateWarehouseDto: UpdateWarehouseDto,
+        @Request() req,
     ) {
-        return this.warehouseService.updateWarehouse(id, updateWarehouseDto);
+        return this.warehouseService.updateWarehouse(id, updateWarehouseDto, req.user.role);
     }
 
     @Roles(
@@ -79,7 +82,8 @@ export class WarehouseController {
     @Delete(':id')
     deleteWarehouse(
         @Param('id', ParseIntPipe) id: number,
+        @Request() req,
     ) {
-        return this.warehouseService.deleteWarehouse(id);
+        return this.warehouseService.deleteWarehouse(id, req.user.role);
     }
 }

@@ -109,8 +109,11 @@ export default function Sidebar() {
                         Stock Sphere
                     </p>
                     <p className="truncate text-xs text-sidebar-foreground/60">
-                        Warehouse operations
+                        Store. Sync. Scale.
                     </p>
+                </div>
+                <div className="ml-auto flex items-center gap-2.5 rounded-lg border border-sidebar-border bg-sidebar-accent/40 px-3 py-2">
+                    <ThemeToggle />
                 </div>
             </div>
 
@@ -183,13 +186,13 @@ export default function Sidebar() {
 
             <div className="space-y-2 p-2">
 
-                <div className="flex items-center justify-between rounded-lg border border-sidebar-border bg-sidebar-accent/40 px-3 py-2">
+                {/* <div className="flex items-center justify-between rounded-lg border border-sidebar-border bg-sidebar-accent/40 px-3 py-2">
                     <span className="text-sm text-sidebar-foreground">
                         Theme
                     </span>
 
                     <ThemeToggle />
-                </div>
+                </div> */}
 
                 {user && (
                     <div className="flex items-center gap-2.5 rounded-lg px-2 py-1.5">

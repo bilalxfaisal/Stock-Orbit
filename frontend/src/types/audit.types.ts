@@ -1,3 +1,6 @@
+import type { StockOutReason } from "./products.types";
+import type { UserRole } from "./user.types";
+
 export interface Audit {
     id: number;
     action: string;
@@ -45,8 +48,9 @@ export type AuditEntity =
 
 export interface AuditSearchDto { }
 
-
 export interface SearchAuditDto {
     action?: AuditAction,
     entity?: AuditEntity,
+    reason?: StockOutReason,
+    role?: UserRole
 }

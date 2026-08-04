@@ -23,8 +23,11 @@ export class UserController {
     // Only admins can create users
     @Post()
     @Roles(UserRole.ADMIN)
-    createUser(@Body() createUserDto: CreateUserDto) {
-        return this.userService.createUser(createUserDto);
+    createUser(
+        @Body() createUserDto: CreateUserDto,
+        @Req() req: Request & { user: any },
+    ) {
+        return this.userService.createUser(createUserDto, req.user.role);
     }
 
     // Logged-in user updates their own name
@@ -34,7 +37,7 @@ export class UserController {
         @Body() name: string
     ) {
         console.log(req.user)
-        return this.userService.updateName(req.user.id, name);
+        return this.userService.updateName(req.user.id, name, req.user.role);
     }
 
     // Logged-in user changes their own password
@@ -43,13 +46,16 @@ export class UserController {
         @Req() req: Request & { user: any },
         @Body() updatePasswordDto: UpdatePasswordDto,
     ) {
-        return this.userService.updatePassword(req.user.id, updatePasswordDto);
+        return this.userService.updatePassword(req.user.id, updatePasswordDto, req.user.role);
     }
 
     // Only admins can delete users
     @Delete(":id")
     @Roles(UserRole.ADMIN)
-    deleteUser(@Param("id", ParseIntPipe) id: number) {
-        return this.userService.deleteUser(id);
+    deleteUser(
+        @Param("id", ParseIntPipe) id: number,
+        @Req() req: Request & { user: any },
+    ) {
+        return this.userService.deleteUser(id, req.user.role);
     }
 }

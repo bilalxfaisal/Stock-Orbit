@@ -4,7 +4,7 @@ import { eq, ilike, SQL, and } from 'drizzle-orm';
 import { Warehouse, Container } from "src/db/schema"
 import { CreateWarehouseDto, UpdateWarehouseDto } from './dto';
 import { AuditService } from 'src/audit/audit.service';
-import { AuditAction, AuditEntity } from 'src/db/enums';
+import { AuditAction, AuditEntity, UserRole } from 'src/db/enums';
 import { SearchWarehouseDto } from './dto/search-warehouse.dto';
 
 @Injectable()
@@ -55,7 +55,7 @@ export class WarehouseService {
             .offset(offset);
     }
 
-    async createWarehouse(createWarehouseDto: CreateWarehouseDto) {
+    async createWarehouse(createWarehouseDto: CreateWarehouseDto, role?: UserRole) {
 
         const [existingWarehouse] = await db
             .select()
@@ -77,6 +77,7 @@ export class WarehouseService {
             action: AuditAction.CREATE,
             entity: AuditEntity.WAREHOUSE,
             entityId: newWarehouse.id,
+            role,
             description: `Created Warehouse '${newWarehouse.name}'`
         })
 
@@ -101,7 +102,7 @@ export class WarehouseService {
         return await db.select().from(Warehouse);
     }
 
-    async updateWarehouse(id: number, updateWarehouseDto: UpdateWarehouseDto) {
+    async updateWarehouse(id: number, updateWarehouseDto: UpdateWarehouseDto, role?: UserRole) {
 
         const [existingWarehouse] = await db
             .select()
@@ -122,13 +123,14 @@ export class WarehouseService {
             action: AuditAction.UPDATE,
             entity: AuditEntity.WAREHOUSE,
             entityId: updatedWarehouse.id,
+            role,
             description: `Updated Warehouse '${updatedWarehouse.name}'`
         })
 
         return updatedWarehouse;
     }
 
-    async deleteWarehouse(id: number) {
+    async deleteWarehouse(id: number, role?: UserRole) {
 
         const [existingWarehouse] = await db
             .select()
@@ -159,6 +161,7 @@ export class WarehouseService {
             action: AuditAction.DELETE,
             entity: AuditEntity.WAREHOUSE,
             entityId: deletedWarehouse.id,
+            role,
             description: `Deleted Warehouse '${deletedWarehouse.name}'`
         })
 

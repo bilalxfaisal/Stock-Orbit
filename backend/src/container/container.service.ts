@@ -4,7 +4,7 @@ import { db } from 'src/db/db';
 import { Category, Container, Inventory, Warehouse } from "src/db/schema"
 import { eq, SQL, and, ilike, gte, lte, sql } from 'drizzle-orm';
 import { AuditService } from 'src/audit/audit.service';
-import { AuditAction, AuditEntity } from 'src/db/enums';
+import { AuditAction, AuditEntity, UserRole } from 'src/db/enums';
 import { SearchContainerDto } from './dto/search-container.dto';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class ContainerService {
 
     constructor(private readonly auditService: AuditService) { }
 
-    async createContainer(createContainerDto: CreateContainerDto) {
+    async createContainer(createContainerDto: CreateContainerDto, role?: UserRole) {
 
         const [existingContainer] = await db
             .select()
@@ -48,6 +48,7 @@ export class ContainerService {
             action: AuditAction.CREATE,
             entity: AuditEntity.CONTAINER,
             entityId: newContainer.id,
+            role,
             description: `Created container '${newContainer.code}'.`,
         });
 
@@ -125,7 +126,7 @@ export class ContainerService {
         )
     }
 
-    async updateContainer(id: number, updateContainerDto: UpdateContainerDto) {
+    async updateContainer(id: number, updateContainerDto: UpdateContainerDto, role?: UserRole) {
 
         const [existingContainer] = await db
             .select()
@@ -146,13 +147,14 @@ export class ContainerService {
             action: AuditAction.UPDATE,
             entity: AuditEntity.CONTAINER,
             entityId: updatedContainer.id,
+            role,
             description: `Updated container '${updatedContainer.code}'.`,
         });
 
         return updatedContainer;
     }
 
-    async deleteContainer(id: number) {
+    async deleteContainer(id: number, role?: UserRole) {
 
         const [existingContainer] = await db
             .select()
@@ -194,9 +196,10 @@ export class ContainerService {
             .where(eq(Warehouse.id, deletedContainer.warehouseId));
 
         await this.auditService.log({
-            action: AuditAction.UPDATE,
+            action: AuditAction.DELETE,
             entity: AuditEntity.CONTAINER,
             entityId: deletedContainer.id,
+            role,
             description: `Deleted container '${deletedContainer.code}'.`,
         });
 

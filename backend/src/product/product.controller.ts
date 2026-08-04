@@ -7,6 +7,7 @@ import {
     Post,
     Query,
     Patch,
+    Request,
     UseGuards
 } from '@nestjs/common';
 
@@ -56,8 +57,9 @@ export class ProductController {
     @Post('stock-in')
     stockIn(
         @Body() stockInDto: StockInProductDto,
+        @Request() req,
     ) {
-        return this.productService.stockIn(stockInDto);
+        return this.productService.stockIn(stockInDto, req.user.role);
     }
 
     @Roles(
@@ -68,8 +70,9 @@ export class ProductController {
     @Post('stock-out')
     stockOut(
         @Body() stockOutDto: StockOutProductDto,
+        @Request() req,
     ) {
-        return this.productService.stockOut(stockOutDto);
+        return this.productService.stockOut(stockOutDto, req.user.role);
     }
 
     @Roles(
@@ -81,10 +84,12 @@ export class ProductController {
     updatePrice(
         @Param("id", ParseIntPipe) id: number,
         @Body() updatePriceDto: UpdatePriceDto,
+        @Request() req,
     ) {
         return this.productService.updateProductPrice(
             id,
             updatePriceDto.price,
+            req.user.role,
         );
     }
 }

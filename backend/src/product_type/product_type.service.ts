@@ -10,14 +10,14 @@ import { Category, Product, ProductType } from "src/db/schema"
 
 import { CreateProductTypeDto, SearchProductTypeDto } from './dto';
 import { AuditService } from 'src/audit/audit.service';
-import { AuditAction, AuditEntity } from 'src/db/enums';
+import { AuditAction, AuditEntity, UserRole } from 'src/db/enums';
 
 @Injectable()
 export class ProductTypeService {
 
     constructor(private readonly auditService: AuditService) { }
 
-    async createProductType(createTypeDto: CreateProductTypeDto) {
+    async createProductType(createTypeDto: CreateProductTypeDto, role?: UserRole) {
 
         // Check if category exists
         const [category] = await db
@@ -54,6 +54,7 @@ export class ProductTypeService {
             action: AuditAction.CREATE,
             entity: AuditEntity.PRODUCT_TYPE,
             entityId: newType.id,
+            role,
             description: `Created Product Type '${newType.name}'`
         })
 
@@ -150,7 +151,7 @@ export class ProductTypeService {
         return productType;
     }
 
-    async deleteProductType(id: number) {
+    async deleteProductType(id: number, role?: UserRole) {
 
         const [existingType] = await db
             .select()
@@ -182,7 +183,8 @@ export class ProductTypeService {
             action: AuditAction.DELETE,
             entity: AuditEntity.PRODUCT_TYPE,
             entityId: deletedType.id,
-            description: `Created Product Type '${deletedType.name}'`
+            role,
+            description: `Deleted Product Type '${deletedType.name}'`
         })
 
         return deletedType;

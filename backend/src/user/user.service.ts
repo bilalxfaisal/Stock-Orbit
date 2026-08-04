@@ -43,7 +43,7 @@ export class UserService {
                     : undefined
             );
     }
-    async createUser(createUserDto: CreateUserDto) {
+    async createUser(createUserDto: CreateUserDto, role?: UserRole) {
 
         const [existingUser] = await db.select().from(User)
             .where(eq(User.email, createUserDto.email));
@@ -66,15 +66,15 @@ export class UserService {
             action: AuditAction.CREATE,
             entity: AuditEntity.USER,
             entityId: newUser.id,
-            role: newUser.role as UserRole,
-            description: `ADMIN created new ${newUser.role} #${newUser.id}.`
+            role,
+            description: `${role ?? 'SYSTEM'} created new ${newUser.role} #${newUser.id}.`
         })
 
         const { password, ...user } = newUser
         return user;
     }
 
-    async updateName(id: number, newName: string) {
+    async updateName(id: number, newName: string, role?: UserRole) {
 
         const user = await this.userExists(id);
 
@@ -86,8 +86,8 @@ export class UserService {
             action: AuditAction.UPDATE,
             entity: AuditEntity.USER,
             entityId: user.id,
-            role: user.role as UserRole,
-            description: `${user.role} #${user.id} updated thier name.`
+            role,
+            description: `${role ?? 'SYSTEM'} updated ${user.role} #${user.id}'s name.`
         })
 
         return {
@@ -101,7 +101,7 @@ export class UserService {
         }
     }
 
-    async updatePassword(id: number, passwordDto: UpdatePasswordDto) {
+    async updatePassword(id: number, passwordDto: UpdatePasswordDto, role?: UserRole) {
 
         const user = await this.userExists(id);
 
@@ -129,8 +129,8 @@ export class UserService {
             action: AuditAction.UPDATE,
             entity: AuditEntity.USER,
             entityId: updatedUser.id,
-            role: updatedUser.role as UserRole,
-            description: `${updatedUser.role} #${updatedUser.id} updated thier password.`
+            role,
+            description: `${role ?? 'SYSTEM'} updated ${updatedUser.role} #${updatedUser.id}'s password.`
         })
 
         return {
@@ -138,7 +138,7 @@ export class UserService {
         }
     }
 
-    async deleteUser(id: number) {
+    async deleteUser(id: number, role?: UserRole) {
 
         // 1. Check User
         const existingUser = await this.userExists(id);
@@ -156,8 +156,8 @@ export class UserService {
             action: AuditAction.DELETE,
             entity: AuditEntity.USER,
             entityId: deletedUser.id,
-            role: deletedUser.role as UserRole,
-            description: `ADMIN deleted ${deletedUser.role} #${deletedUser.id}.`
+            role,
+            description: `${role ?? 'SYSTEM'} deleted ${deletedUser.role} #${deletedUser.id}.`
         })
 
         return {

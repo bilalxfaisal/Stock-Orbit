@@ -19,6 +19,8 @@ import { PageLoadingState, ErrorState } from "@/components/PageStates";
 import { useAuditHistory, useAuditStats } from "@/hooks/useAudit";
 import { useAuth } from "@/providers/AuthProvider";
 import { AuditAction, AuditEntity } from "@/types/audit.types";
+import { StockOutReason } from "@/types/products.types";
+import { UserRole } from "@/types/user.types";
 
 export default function AuditPage() {
 
@@ -26,13 +28,15 @@ export default function AuditPage() {
 
     const [action, setAction] = useState<AuditAction | undefined>(undefined);
     const [entity, setEntity] = useState<AuditEntity | undefined>(undefined);
+    const [reason, setReason] = useState<StockOutReason | undefined>(undefined);
+    const [role, setRole] = useState<UserRole | undefined>(undefined);
 
     const {
         data: audits = [],
         isLoading: historyLoading,
         error: historyError
     } = useAuditHistory({
-        entity, action,
+        entity, action, reason, role
     });
 
     const {
@@ -128,6 +132,26 @@ export default function AuditPage() {
                                 label: entity,
                             }))}
                             allLabel="All Entities"
+                        />
+
+                        <FilterSelect<StockOutReason>
+                            value={reason}
+                            onValueChange={setReason}
+                            options={Object.values(StockOutReason).map((reason) => ({
+                                id: reason,
+                                label: reason,
+                            }))}
+                            allLabel="All Reasons"
+                        />
+
+                        <FilterSelect<UserRole>
+                            value={role}
+                            onValueChange={setRole}
+                            options={Object.values(UserRole).map((role) => ({
+                                id: role,
+                                label: role,
+                            }))}
+                            allLabel="All Roles"
                         />
                     </FilterToolbar>
 

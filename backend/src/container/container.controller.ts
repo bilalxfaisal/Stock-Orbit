@@ -8,6 +8,7 @@ import {
 	Patch,
 	Post,
 	Query,
+	Request,
 	UseGuards,
 } from '@nestjs/common';
 import { ContainerService} from './container.service';
@@ -53,8 +54,11 @@ export class ContainerController {
 		UserRole.MANAGER,
 	)
 	@Post()
-	createContainer(@Body() createContainerDto: CreateContainerDto) {
-		return this.containerService.createContainer(createContainerDto);
+	createContainer(
+		@Body() createContainerDto: CreateContainerDto,
+		@Request() req,
+	) {
+		return this.containerService.createContainer(createContainerDto, req.user.role);
 	}
 
 	@Roles(
@@ -65,15 +69,19 @@ export class ContainerController {
 	updateContainer(
 		@Param('id', ParseIntPipe) id: number,
 		@Body() updateContainerDto: UpdateContainerDto,
+		@Request() req,
 	) {
-		return this.containerService.updateContainer(id, updateContainerDto);
+		return this.containerService.updateContainer(id, updateContainerDto, req.user.role);
 	}
 
 	@Roles(
 		UserRole.ADMIN,
 	)
 	@Delete(':id')
-	deleteContainer(@Param('id', ParseIntPipe) id: number) {
-		return this.containerService.deleteContainer(id);
+	deleteContainer(
+		@Param('id', ParseIntPipe) id: number,
+		@Request() req,
+	) {
+		return this.containerService.deleteContainer(id, req.user.role);
 	}
 }

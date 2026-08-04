@@ -44,6 +44,18 @@ export class AuditService {
             )
         }
 
+        if (query.reason) {
+            conditions.push(
+                eq(Audit.reason, query.reason)
+            )
+        }
+
+        if (query.role) {
+            conditions.push(
+                eq(Audit.role, query.role)
+            )
+        }
+
         return await db
             .select()
             .from(Audit)

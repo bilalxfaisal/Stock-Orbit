@@ -8,6 +8,7 @@ import {
     Patch,
     Post,
     UseGuards,
+    Request,
 } from "@nestjs/common";
 import { CategoryService } from "./category.service";
 import { CreateCategoryDto } from "./dto/create-category.dto";
@@ -54,9 +55,13 @@ export class CategoryController {
     )
     @Post()
     createCategory(
-        @Body() createCategoryDto: CreateCategoryDto,
+        @Body() dto: CreateCategoryDto,
+        @Request() req,
     ) {
-        return this.categoryService.createCategory(createCategoryDto);
+        return this.categoryService.createCategory(
+            dto,
+            req.user.role,
+        );
     }
 
     // @Patch(":id")
@@ -73,7 +78,8 @@ export class CategoryController {
     @Delete(":id")
     deleteCategory(
         @Param("id", ParseIntPipe) id: number,
+        @Request() req,
     ) {
-        return this.categoryService.deleteCategory(id);
+        return this.categoryService.deleteCategory(id, req.user.role);
     }
 }
