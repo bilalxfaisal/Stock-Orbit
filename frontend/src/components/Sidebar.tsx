@@ -89,7 +89,7 @@ export default function Sidebar() {
     const { can } = usePermission();
 
     return (
-        <aside className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
+        <aside className="flex h-screen flex-col bg-sidebar text-sidebar-foreground">
 
             {/* Logo / application title */}
 
@@ -112,7 +112,7 @@ export default function Sidebar() {
                         Store. Sync. Scale.
                     </p>
                 </div>
-                <div className="ml-auto flex items-center gap-2.5 rounded-lg border border-sidebar-border bg-sidebar-accent/40 px-3 py-2">
+                <div className="ml-auto hidden md:flex items-center gap-2.5 rounded-lg border border-sidebar-border bg-sidebar-accent/40 px-3 py-2">
                     <ThemeToggle />
                 </div>
             </div>
