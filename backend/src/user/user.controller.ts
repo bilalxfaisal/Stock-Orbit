@@ -8,7 +8,7 @@ import { Req } from '@nestjs/common';
 import { UserRole } from 'src/db/enums';
 import { ApiTags } from '@nestjs/swagger';
 
-//@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags("Users")
 @Controller('users')
 export class UserController {
@@ -22,7 +22,7 @@ export class UserController {
 
     // Only admins can create users
     @Post()
-    //@Roles(UserRole.ADMIN)
+    @Roles(UserRole.ADMIN)
     createUser(
         @Body() createUserDto: CreateUserDto,
         @Req() req: Request & { user: any },
