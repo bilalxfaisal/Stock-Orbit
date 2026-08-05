@@ -12,10 +12,9 @@
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Active-2E7D32?style=for-the-badge)
 
-*A full-stack warehouse management platform for tracking products, containers,*
-*and stock movement across multiple warehouses — with full audit traceability.*
+*A full-stack warehouse management platform for tracking products, containers, and stock movement across multiple warehouses — with full audit traceability.*
 
-[Features](#-features) · [Architecture](#-architecture) · [Quick Start](#-quick-start) · [Roles & Permissions](#-roles--permissions) · [Tech Stack](#-built-with)
+[Features](#-features) · [Live Demo](#-live-demo) · [Architecture](#-architecture) · [Quick Start](#-quick-start) · [Roles & Permissions](#-roles--permissions) · [Tech Stack](#-built-with)
 
 </div>
 
@@ -26,6 +25,16 @@
 **Stock Orbit** is a full-stack inventory and warehouse management system built with **NestJS**, **React**, and **PostgreSQL** (via **Drizzle ORM**). It models the complete physical hierarchy of a warehouse operation — warehouses → containers → products — and tracks every stock movement with a tamper-visible audit trail.
 
 Designed around **role-based access control**, Stock Orbit gives admins, managers, staff, and auditors exactly the permissions their job needs, while keeping every stock-in, stock-out, and record change logged and attributable.
+
+---
+
+## 🌐 Live Demo
+
+**Stock Orbit is deployed and can be viewed and used online:**
+
+👉 **https://stockorbit.vercel.app**
+
+> The live application connects to the deployed NestJS backend and PostgreSQL database.
 
 ---
 
@@ -87,6 +96,8 @@ The frontend mirrors this structure 1:1: a typed `api/` client per domain, a `ho
 
 ## ⚡ Quick Start
 
+The live application is available at **https://stockorbit.vercel.app**. The following steps are only needed if you want to run Stock Orbit locally.
+
 ### 1. Clone the repository
 
 ```bash
@@ -119,6 +130,8 @@ backend/.env
 ```
 
 Configure your PostgreSQL database connection and JWT secret in the `.env` file.
+
+For production, the backend can be deployed separately as a NestJS API and the frontend as a Vite application.
 
 ### 4. Setup the database
 
