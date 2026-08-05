@@ -29,10 +29,11 @@ async function bootstrap() {
 
 	SwaggerModule.setup('api', app, document);
 
-	await app.listen(
-    process.env.PORT || 6006,
-    '0.0.0.0',
-  );
+	const port = process.env.PORT || 6006;
+
+	await app.listen(port, "0.0.0.0");
+
+	console.log(`Server is listening on ${port}`);
 }
 
 bootstrap();
