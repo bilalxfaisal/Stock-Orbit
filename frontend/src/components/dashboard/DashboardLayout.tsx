@@ -44,7 +44,7 @@ export default function DashboardLayout() {
 
                     {/* Center */}
                     <h1 className="absolute left-1/2 -translate-x-1/2 text-lg font-semibold text-sidebar-foreground">
-                        Stock Sphere
+                        Stock Orbit
                     </h1>
 
                     {/* Right */}

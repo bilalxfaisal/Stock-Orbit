@@ -10,7 +10,7 @@ export default function MobileBrandHeader() {
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 p-2.5 ring-1 ring-white/15">
                 <img
                     src={stockSphereOrangeLogo}
-                    alt="Stock Sphere"
+                    alt="Stock Orbit"
                     className="h-full w-full object-contain select-none"
                 />
             </div>
@@ -21,7 +21,7 @@ export default function MobileBrandHeader() {
             </span>
 
             <p className="text-2xl font-semibold tracking-tight text-white">
-                Stock Sphere
+                Stock Orbit
             </p>
         </div>
     );

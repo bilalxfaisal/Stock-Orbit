@@ -40,7 +40,7 @@ export default function BrandPanel() {
                     <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white/10 p-2.5 ring-1 ring-white/15">
                         <img
                             src={stockSphereOrangeLogo}
-                            alt="Stock Sphere"
+                            alt="Stock Orbit"
                             className="h-full w-full object-contain select-none"
                         />
                     </div>
@@ -52,7 +52,7 @@ export default function BrandPanel() {
                         </span>
 
                         <p className="text-2xl font-semibold tracking-tight text-white xl:text-3xl">
-                            Stock Sphere
+                            Stock Orbit
                         </p>
                     </div>
                 </div>
@@ -78,7 +78,7 @@ export default function BrandPanel() {
             </div></div>
 
             <p className="relative z-10 text-xs text-sidebar-foreground/40">
-                &copy; {new Date().getFullYear()} Stock Sphere. All rights reserved.
+                &copy; {new Date().getFullYear()} Stock Orbit. All rights reserved.
             </p>
         </div>
     );

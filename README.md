@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="frontend/src/components/assets/stock-sphere-logo.png" alt="Stock Sphere Logo" width="300" />
+<img src="frontend/src/components/assets/stock-sphere-logo.png" alt="Stock Orbit Logo" width="300" />
 
-# STOCK SPHERE
+# Stock Orbit
 ### Warehouse & Inventory Management System
 
 ![NestJS](https://img.shields.io/badge/NestJS-11-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
@@ -23,9 +23,9 @@
 
 ## 📌 Overview
 
-**Stock Sphere** is a full-stack inventory and warehouse management system built with **NestJS**, **React**, and **PostgreSQL** (via **Drizzle ORM**). It models the complete physical hierarchy of a warehouse operation — warehouses → containers → products — and tracks every stock movement with a tamper-visible audit trail.
+**Stock Orbit** is a full-stack inventory and warehouse management system built with **NestJS**, **React**, and **PostgreSQL** (via **Drizzle ORM**). It models the complete physical hierarchy of a warehouse operation — warehouses → containers → products — and tracks every stock movement with a tamper-visible audit trail.
 
-Designed around **role-based access control**, Stock Sphere gives admins, managers, staff, and auditors exactly the permissions their job needs, while keeping every stock-in, stock-out, and record change logged and attributable.
+Designed around **role-based access control**, Stock Orbit gives admins, managers, staff, and auditors exactly the permissions their job needs, while keeping every stock-in, stock-out, and record change logged and attributable.
 
 ---
 
@@ -69,7 +69,7 @@ Designed around **role-based access control**, Stock Sphere gives admins, manage
 
 ## 🏗️ Architecture
 
-Stock Sphere is a two-package monorepo:
+Stock Orbit is a two-package monorepo:
 
 ```
 Stock-Sphere/

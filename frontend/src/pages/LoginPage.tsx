@@ -70,7 +70,7 @@ export default function LoginPage() {
                 <LoginCard {...cardProps} />
 
                 <p className="relative z-10 text-xs text-sidebar-foreground/40">
-                    &copy; {new Date().getFullYear()} Stock Sphere. All rights reserved.
+                    &copy; {new Date().getFullYear()} Stock Orbit. All rights reserved.
                 </p>
             </div>
         </>

@@ -104,7 +104,7 @@ export default function Sidebar() {
 
                 <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-white">
-                        Stock Sphere
+                        Stock Orbit
                     </p>
                     <p className="truncate text-xs text-sidebar-foreground/60">
                         Store. Sync. Scale.
