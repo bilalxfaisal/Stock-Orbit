@@ -49,7 +49,7 @@ async function bootstrap() {
 
   await app.listen(port, '0.0.0.0');
 
-  console.log('PORT env =', 6006);
+  console.log('PORT env =', process.env.PORT);
   console.log('Address =', app.getHttpServer().address());
 }
 
