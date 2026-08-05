@@ -40,7 +40,7 @@ export default function AuditTable({ audits }: Props) {
             <TableHead className="text-right">Quantity</TableHead>
             <TableHead>Reason</TableHead>
             <TableHead>Role</TableHead>
-            <TableHead>Description</TableHead>
+            {/* <TableHead>Description</TableHead> */}
           </TableRow>
         </TableHeader>
 
@@ -61,9 +61,9 @@ export default function AuditTable({ audits }: Props) {
               <TableCell>
                 {audit.role ? <StatusBadge value={audit.role} /> : <span className="text-muted-foreground">—</span>}
               </TableCell>
-              <TableCell className="max-w-[280px] text-muted-foreground whitespace-normal">
+              {/* <TableCell className="max-w-[280px] text-muted-foreground whitespace-normal">
                 {audit.description ?? "—"}
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           ))}
         </TableBody>
