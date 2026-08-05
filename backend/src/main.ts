@@ -7,7 +7,10 @@ async function bootstrap() {
 	const app = await NestFactory.create(AppModule)
 
 	app.enableCors({
-		origin: "http://localhost:6063",
+		origin: [
+			'http://localhost:6063',
+			'https://stock-sphere-delta.vercel.app',
+		],
 		credentials: true,
 	});
 
