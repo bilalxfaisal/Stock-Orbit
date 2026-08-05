@@ -9,7 +9,7 @@ async function bootstrap() {
 	app.enableCors({
 		origin: [
 			'http://localhost:6063',
-			'https://stock-sphere-delta.vercel.app',
+			'https://stockorbit.vercel.app',
 		],
 		credentials: true,
 	});
