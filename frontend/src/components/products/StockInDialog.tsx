@@ -198,7 +198,7 @@ export default function CreateProductDialog() {
                 Stock In Product
             </DialogTrigger>
 
-            <DialogContent>
+            <DialogContent className="max-h-[90vh] overflow-y-auto">
 
                 <DialogHeader>
 
