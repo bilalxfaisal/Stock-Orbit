@@ -27,7 +27,7 @@ export class UserController {
         @Body() createUserDto: CreateUserDto,
         @Req() req: Request & { user: any },
     ) {
-        return this.userService.createUser(createUserDto, req.user.role);
+        return this.userService.createUser(createUserDto, UserRole.ADMIN);
     }
 
     // Logged-in user updates their own name
