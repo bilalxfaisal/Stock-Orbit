@@ -11,7 +11,6 @@ import {
 import DataTableCard from "@/components/DataTableCard";
 import { EmptyState } from "@/components/PageStates";
 
-import UpdateContainerDialog from "./UpdateContainerDialog";
 import DeleteContainerDialog from "./DeleteContainerDialog";
 import type { Container } from "@/types/container.types";
 

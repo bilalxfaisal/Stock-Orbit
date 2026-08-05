@@ -9,7 +9,6 @@ import {
     Users,
     ClipboardList,
     LogOut,
-    Layers,
 } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
@@ -23,7 +22,6 @@ import { usePermission } from "@/hooks/usePermission";
 import type { Permission } from "@/types/permission.types";
 import { cn } from "@/lib/utils";
 import stockSphereBlueLogo from "@/components/assets/stock-sphere-logo-blue.svg"
-import stockSphereOrangeLogo from "@/components/assets/stock-sphere-logo.png"
 import ThemeToggle from "./ThemeToggle";
 
 const links = [

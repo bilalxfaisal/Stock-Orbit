@@ -1,4 +1,4 @@
-import type { CreateUserDto, SearchUserDto, UpdateUserDto, User } from "@/types/user.types"
+import type { CreateUserDto, SearchUserDto, User } from "@/types/user.types"
 import api from "./axios"
 
 export async function getUsers(query?: SearchUserDto): Promise<User[]> {
