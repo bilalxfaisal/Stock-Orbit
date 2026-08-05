@@ -14,5 +14,5 @@
  * the frontend can adapt its UI (e.g. hide the container picker).
  */
 export const stockConfig = {
-    allowManualContainerSelection: true,
+    allowManualContainerSelection: false,
 };
