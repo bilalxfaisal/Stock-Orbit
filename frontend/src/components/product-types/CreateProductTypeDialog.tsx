@@ -81,7 +81,7 @@ export default function CreateProductTypeDialog() {
         <Dialog open={open} onOpenChange={(next) => { setOpen(next); if (!next) resetForm(); }}>
             <DialogTrigger render={<Button disabled={!can("createProductType")} />}>Create Product Type</DialogTrigger>
 
-            <DialogContent>
+            <DialogContent className="max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Create Product Type</DialogTitle>
                 </DialogHeader>

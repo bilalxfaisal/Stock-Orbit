@@ -112,7 +112,7 @@ export default function StockOutProductDialog({ product }: { product: Product })
     return (
         <Dialog open={open} onOpenChange={(next) => { setOpen(next); if (!next) resetForm(); }}>
             <DialogTrigger render={<Button disabled={!can("stockOut")} />}>Stock Out</DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>
                         Stock Out Product

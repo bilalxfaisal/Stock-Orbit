@@ -80,7 +80,7 @@ export default function UpdateContainerDialog({
                 Edit
             </DialogTrigger>
 
-            <DialogContent>
+            <DialogContent className="max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Edit Container</DialogTitle>
                 </DialogHeader>

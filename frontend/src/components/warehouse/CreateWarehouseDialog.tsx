@@ -75,7 +75,7 @@ export default function CreateWarehouseDialog() {
                 Create Warehouse
             </DialogTrigger>
 
-            <DialogContent>
+            <DialogContent className="max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Create Warehouse</DialogTitle>
                 </DialogHeader>

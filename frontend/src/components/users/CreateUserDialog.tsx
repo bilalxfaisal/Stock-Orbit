@@ -79,7 +79,7 @@ export default function CreateUserDialog() {
             <DialogTrigger render={<Button disabled={!can("createUser")}
             />}>Create User</DialogTrigger>
 
-            <DialogContent>
+            <DialogContent className="max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Create User</DialogTitle>
                 </DialogHeader>

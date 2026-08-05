@@ -61,7 +61,7 @@ export default function CreateCategoryDialog() {
         <Dialog open={open} onOpenChange={(next) => { setOpen(next); if (!next) resetForm(); }}>
             <DialogTrigger render={<Button disabled={!can("createCategory")} />}>Create Category</DialogTrigger>
 
-            <DialogContent>
+            <DialogContent className="max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Create Category</DialogTitle>
                 </DialogHeader>

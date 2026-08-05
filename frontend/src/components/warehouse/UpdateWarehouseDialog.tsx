@@ -83,7 +83,7 @@ export default function UpdateWarehouseDialog({
                 Edit
             </DialogTrigger>
 
-            <DialogContent>
+            <DialogContent className="max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Edit Warehouse</DialogTitle>
                 </DialogHeader>
