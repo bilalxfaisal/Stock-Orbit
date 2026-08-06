@@ -45,12 +45,21 @@ export class UserService {
     }
     async createUser(createUserDto: CreateUserDto, role?: UserRole) {
 
-        const [existingUser] = await db.select().from(User)
+        const [existingUserWithPhoneNumber] = await db.select().from(User)
+            .where(eq(User.phoneNumber, createUserDto.phoneNumber));
+
+        if (existingUserWithPhoneNumber) {
+            throw new BadRequestException("User with this phone number already exists.");
+        }
+        
+        const [existingUserWithEmail] = await db.select().from(User)
             .where(eq(User.email, createUserDto.email));
 
-        if (existingUser) {
+        if (existingUserWithEmail) {
             throw new BadRequestException("User with this email already exists.");
         }
+
+        
 
         const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
