@@ -218,7 +218,7 @@ export default function CreateProductDialog() {
                     <InputField
                         label="Brand"
                         type="text"
-                        placeholder="Enter brand"
+                        placeholder="Enter name"
                         value={brand}
                         onChange={(e) => {
                             setBrand(e.target.value);
