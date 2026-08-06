@@ -27,7 +27,7 @@ export default function ProductsTable({ products }: Props) {
         <TableHeader>
           <TableRow>
             <TableHead>Brand</TableHead>
-            <TableHead>Model</TableHead>
+            <TableHead>Name</TableHead>
             <TableHead className="text-right">Price</TableHead>
             <TableHead>Product Type</TableHead>
             <TableHead>Category</TableHead>

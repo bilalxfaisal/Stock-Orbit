@@ -6,13 +6,12 @@ export default function BrandBackdrop() {
     return (
         <>
             <div
-                className="pointer-events-none absolute inset-0 opacity-[0.05]"
+                className="pointer-events-none absolute inset-0 text-sidebar-foreground opacity-[0.08]"
                 style={{
                     backgroundImage:
                         "radial-gradient(currentColor 1px, transparent 1px)",
                     backgroundSize: "22px 22px",
                 }}
-                aria-hidden="true"
             />
 
             <div
