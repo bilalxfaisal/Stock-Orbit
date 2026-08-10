@@ -10,7 +10,6 @@ import FilterSelect from "@/components/FilterSelect";
 import { useProducts } from "@/hooks/useProducts";
 import { useCategories } from "@/hooks/useCategories";
 import { useProductTypes } from "@/hooks/useProductTypes";
-import { useContainers } from "@/hooks/useContainers";
 
 import { useEffect, useState } from "react";
 
@@ -28,10 +27,6 @@ export default function ProductsPage() {
 	);
 
 	const [productTypeId, setProductTypeId] = useState<
-		number | undefined
-	>(undefined);
-
-	const [containerId, setContainerId] = useState<
 		number | undefined
 	>(undefined);
 
@@ -68,22 +63,11 @@ export default function ProductsPage() {
 
 	// Containers
 
-	const {
-		data: containers = [],
-	} = useContainers(
-		categoryId
-			? {
-				categoryId,
-			}
-			: undefined,
-	);
-
 	// Reset dependent filters when category changes
 
 	useEffect(() => {
 		setProductTypeId(undefined);
-		setContainerId(undefined);
-	}, [categoryId]);
+	});
 
 	if (isLoading) {
 		return <PageLoadingState />;
