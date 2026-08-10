@@ -14,12 +14,14 @@ export class SearchProductDto {
   // Filters
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumberString()
-  categoryId?: string;
+  categoryId?: number;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumberString()
-  productTypeId?: string;
+  productTypeId?: number;
 
   @IsOptional()
   @IsNumberString()

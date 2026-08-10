@@ -145,17 +145,6 @@ export default function ProductsPage() {
 							disabled={!categoryId}
 						/>
 
-						<FilterSelect
-							value={containerId}
-							onValueChange={setContainerId}
-							options={containers.map((container) => ({
-								id: container.id,
-								label: container.code,
-							}))}
-							allLabel="All Containers"
-							disabled={!categoryId}
-						/>
-
 					</FilterToolbar>
 
 					{/* Products table */}
