@@ -120,7 +120,6 @@ export default function Sidebar() {
             <nav className="flex-1 space-y-0.5 overflow-y-auto p-3">
 
                 {links.map((link) => {
-
                     const allowed =
                         !link.permission || can(link.permission);
 
@@ -132,7 +131,7 @@ export default function Sidebar() {
                         active
                             ? "bg-sidebar-accent text-sidebar-accent-foreground"
                             : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                        !allowed && "pointer-events-none opacity-40",
+                        !allowed && "cursor-not-allowed opacity-40",
                     );
 
                     const content = (
@@ -152,24 +151,29 @@ export default function Sidebar() {
                         </span>
                     );
 
+                    // User DOES NOT have permission
                     if (!allowed) {
                         return (
                             <Tooltip key={link.href}>
                                 <TooltipTrigger
                                     render={
-                                        <div aria-disabled="true">
+                                        <div
+                                            aria-disabled="true"
+                                            className="cursor-not-allowed"
+                                        >
                                             {content}
                                         </div>
                                     }
                                 />
 
                                 <TooltipContent side="right">
-                                    You don&apos;t have access to this section
+                                    You don&apos;t have access to this page
                                 </TooltipContent>
                             </Tooltip>
                         );
                     }
 
+                    // User HAS permission
                     return (
                         <Link key={link.href} to={link.href}>
                             {content}
